@@ -310,6 +310,41 @@ void quick_sort(int num[], int size)
     quick_pass(num, 0, size-1);
 }
 
-//table sort: indrectly sort 间接排序
+////table sort 表排序: indrectly sort 间接排序
 //the sorted objects are a big struct
-//do not move object itself, just move the pointer of them
+//do not move object itself, just move the pointer(or index) of them
+//假设 A[] 是一个存放复杂结构的数组
+//新建table[] 来为 A[]中的元素排序(按照某种关键字或是其他指标)
+//table[] 初始化时为 0 1 2 3 4 ... N-1
+//排完序后 A[] not change
+//table[] 中存放排序后索引
+//若要 A[] 按顺序输出
+//则 A[table[0]], A[table[1]], ......., A[table[N-1]]
+
+
+////physics sort 物理排序（在表排序的基础上硬要在物理内存上也有序）
+//N个数字的排列由若干个独立的环组成
+//一堆数字排序，最后总能形成交换的圈子，在每个圈子内交换完就完成排序
+//最坏情况：有 floor(N/2)个环，每个环有两个元素；此时需要floor(3N/2)次元素移动
+//T(N) = O(mN)  (如果复制时间m不可忽略)
+
+
+////bucket sort 桶排序
+//已知数字分布情况，如：       0 1 2 3 4 .....88....100
+//int* count[]存放符合指针头：# # # # #......#......#
+//指针头形成链表存放对应符合数字的元素
+//T(N,M) = O(M+N)
+//N表示要插入N次
+//M表示数字分布的种类个数，因为在最后需要进行M次的遍历来输出或赋值形成有序数列
+
+
+////基数排序 : 如果桶排序中 M 远大于 N
+//例如，先个位，再十位，接着更高位的桶排序(次位优先)
+//T=O(P*(N+B))
+//B:桶的个数
+//P:pass，趟数
+
+
+////多关键字排序
+//可以次位优先桶排序： 例如扑克牌先为面值建立13个桶
+//再为花色建立4个桶
