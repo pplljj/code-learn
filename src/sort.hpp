@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<iostream>
+#include<stdlib.h>
 
 void swap(int& a, int& b) {
     int tmp = a;
@@ -200,7 +201,7 @@ void msort(int num[],int tmpA[], int L, int RightEnd) {
 ///API //稳定
 void merge_sort(int num[],int size) {
     int *tmpA;
-    tmpA = malloc(size * sizeof(int));
+    tmpA = (int*)malloc(size * sizeof(int));
     if(tmpA != NULL) {
         msort(num, tmpA, 0, size-1);
         free(tmpA);
@@ -239,14 +240,14 @@ void merge_pass(int num[], int tmpA[], int N, int length/*当前有序子列长�
     if(i+length < N) //有尾巴, 归并最后两个子列
         merge01(num, tmpA, i, i+length, N-1);
     else
-        for(int i=i;j<N;j++) tmpA[j] = num[j];
+        for(int j=i;j<N;j++) tmpA[j] = num[j];
 }
 
 ///API //稳定
 void merge_sort01(int num[],int size) {
     int *tmpA;
     int length = 1;
-    tmpA = malloc(size * sizeof(int));
+    tmpA = (int*)malloc(size * sizeof(int));
     if(tmpA != NULL) {
         while(length < size){
             merge_pass(num, tmpA, size, length);
@@ -264,3 +265,4 @@ void merge_sort01(int num[],int size) {
 ///快速排序 分而治之
 ///选主元，分于两块；两块之中再选主元，再分于两块；递归而下
 ///最好情况： 每次正好中分， T(N) = O(NlogN)
+
