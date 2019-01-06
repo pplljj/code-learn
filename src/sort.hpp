@@ -266,3 +266,50 @@ void merge_sort01(int num[],int size) {
 ///选主元，分于两块；两块之中再选主元，再分于两块；递归而下
 ///最好情况： 每次正好中分， T(N) = O(NlogN)
 
+int median3(int num[], int left, int right)
+{
+  int center = (left+right)/2;
+  if(num[left]> num[center])
+      swap(num[left],num[center]);
+  if(num[left]> num[right])
+      swap(num[left],num[right]);
+  if(num[center]> num[right])
+      swap(num[center],num[right]);
+  //at now, num[left] < num[center] < num[right]
+  swap(num[center],num[right-1]);//将主元藏到右边
+  //只需考虑num[left+1]...num[right-2]
+  return num[right-1];
+}
+
+void quick_pass(int num[], int start, int end)
+{
+    //if size is too small, this algorithm is not suitable
+    //one pass
+    if(end - start == 0) return;
+    if(end - start == 1){
+        if(num[end] < num[start]) swap(num[end],num[start]);
+        return;
+    }
+    int pivot = median3(num,start,end);
+    if(end - start == 2) return;
+
+    int i=start+1;
+    int j=end-2;
+    while(i < j){
+        while(num[i]<pivot) i++;
+        while(num[j]>pivot) j--;
+        if(i<j) swap(num[i],num[j]);
+    }
+    swap(num[i],num[end-1]);
+    quick_pass(num, start, i-1);
+    quick_pass(num, i+1, end);
+}
+
+void quick_sort(int num[], int size)
+{
+    quick_pass(num, 0, size-1);
+}
+
+//table sort: indrectly sort 间接排序
+//the sorted objects are a big struct
+//do not move object itself, just move the pointer of them
