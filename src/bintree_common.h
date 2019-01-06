@@ -3,12 +3,12 @@
 
 namespace bbt {
 
-	typedef struct people{
-		int val;
-		struct people* pleft;
-		struct people* pright;
-		people(): val(0),pleft(0),pright(0){};
-	}node;
-	
+    typedef struct people{
+        int val;
+        struct people* pleft;
+        struct people* pright;
+        people(): val(0),pleft(0),pright(0){};
+    }node;
+    
 }
 #endif

@@ -15,147 +15,147 @@ using namespace bbt;
 
 int main()
 {
-	
-	int number[max_size];
-	int num;
-	int ct = 0;
-	
-	//¶¨ÒåµÄÊ÷µÄÊı¾İ´æÔÚtxtÖĞ
-	string data = "C:\\Users\\Administrator\\Desktop\\datastruct\\project\\data1.txt";
-	ifstream input(data);
 
-	while (input >> num)
-	{
-		number[ct] = num;
-		++ct;
-	}
+    int number[max_size];
+    int num;
+    int ct = 0;
 
-	int len = ct;
+    //å®šä¹‰çš„æ ‘çš„æ•°æ®å­˜åœ¨txtä¸­
+    string data = "C:\\Users\\Administrator\\Desktop\\datastruct\\project\\data1.txt";
+    ifstream input(data);
 
-	for (int i = 0; i < len; i++)
-	{
-		cout << number[i] << " ";
-	} cout << endl;
-	
-	/*´ÓtxtÖĞ¶ÁÈ¡Êı¾İ£¬Éú³ÉÒ»¸öÊ÷¡£
-	Êı¾İ¹æÔòÈçÏÂ£º
-	1.ÔªËØÖ®¼äÒÔ¿Õ¸ñ¸ô¿ª
-	2.Êı¾İË³ĞòÄ¬ÈÏÎªÏÈĞò±éÀú(¸ù¡¢×ó¡¢ÓÒ)
-	3.-9999´ú±íµ±Ç°½ÚµãµÄ×ó×ÓÊ÷Ã»ÓĞÔªËØÁË£¬×ªÓÒ×ÓÊ÷
-	4.ÒÑ¾­×ªµ½ÓÒ×ÓÊ÷£¬ÈÔ³öÏÖ-9999£¬
-	  Ôò×ªÍùµ±Ç°½ÚµãµÄ¸¸½ÚµãµÄÓÒ×ÓÊ÷¡£ÒÔ´ËÀàÍÆ¡£
-	5.Àı×Ó:
-	  TXTÊı¾İ£º
-	    1 2 3 -9999 -9999 4 -9999 -9999 5 6 -9999 -9999 7
-	  Éú³ÉµÄÊ÷ÈçÏÂ£º
-	              1
-				  /\
-				 /  \
-				/    \
-			   /      \
-			  /        \
-			 2          5
-			/ \        / \
-		   3   4      6   7
-		  /\   /\    /\   
-		 #  # #  #  #  # 
-	*/
-	node* root_ = init(number, len);
+    while (input >> num)
+    {
+        number[ct] = num;
+        ++ct;
+    }
 
-	cout << "\nxian xu" << endl;
-	preorder(root_);
-	
-	cout << "\nzhong xu" << endl;
-	inorder(root_);
+    int len = ct;
 
-	cout << "\nhou xu" << endl;
-	postorder(root_);
+    for (int i = 0; i < len; i++)
+    {
+        cout << number[i] << " ";
+    } cout << endl;
+
+    /*ä»txtä¸­è¯»å–æ•°æ®ï¼Œç”Ÿæˆä¸€ä¸ªæ ‘ã€‚
+    æ•°æ®è§„åˆ™å¦‚ä¸‹ï¼š
+    1.å…ƒç´ ä¹‹é—´ä»¥ç©ºæ ¼éš”å¼€
+    2.æ•°æ®é¡ºåºé»˜è®¤ä¸ºå…ˆåºéå†(æ ¹ã€å·¦ã€å³)
+    3.-9999ä»£è¡¨å½“å‰èŠ‚ç‚¹çš„å·¦å­æ ‘æ²¡æœ‰å…ƒç´ äº†ï¼Œè½¬å³å­æ ‘
+    4.å·²ç»è½¬åˆ°å³å­æ ‘ï¼Œä»å‡ºç°-9999ï¼Œ
+      åˆ™è½¬å¾€å½“å‰èŠ‚ç‚¹çš„çˆ¶èŠ‚ç‚¹çš„å³å­æ ‘ã€‚ä»¥æ­¤ç±»æ¨ã€‚
+    5.ä¾‹å­:
+      TXTæ•°æ®ï¼š
+        1 2 3 -9999 -9999 4 -9999 -9999 5 6 -9999 -9999 7
+      ç”Ÿæˆçš„æ ‘å¦‚ä¸‹ï¼š
+                  1
+                  /\
+                 /  \
+                /    \
+               /      \
+              /        \
+             2          5
+            / \        / \
+           3   4      6   7
+          /\   /\    /\
+         #  # #  #  #  #
+    */
+    node* root_ = init(number, len);
+
+    cout << "\nxian xu" << endl;
+    preorder(root_);
+
+    cout << "\nzhong xu" << endl;
+    inorder(root_);
+
+    cout << "\nhou xu" << endl;
+    postorder(root_);
 #if 0
-	int leaf = 0;
-	numofleaf(root_, leaf);
+    int leaf = 0;
+    numofleaf(root_, leaf);
 
-	cout << "\nleaf: " << leaf << endl;
-
-
-	int lf = numofleaf(root_);
-	cout << lf << endl;
-
-	int k = 0;
-	int h = 0;
-	depthoftree(root_, k, h);
-	cout << "\ndepth: " << h << endl;
-
-	int ol = depthoftree1(root_);
-	cout << ol << endl;
+    cout << "\nleaf: " << leaf << endl;
 
 
-	if (isContain(root_, 93))
-		cout << "contain 93" << endl;
+    int lf = numofleaf(root_);
+    cout << lf << endl;
 
-	if (isContain(root_,500))
-		cout << "contain 500" << endl;
+    int k = 0;
+    int h = 0;
+    depthoftree(root_, k, h);
+    cout << "\ndepth: " << h << endl;
 
-	int num_ = 0;
-	numOfContain(root_, 23, num_);
-
-	cout << "there are 23 of " << num_ << endl;
-
-	int ao = numOfContain(root_, 23);
-	cout << "OOOOOO 23 of " << ao << endl;
-
-	int yu = nodecount(root_);
-	cout << yu << endl;
-
-	int nodenum = 0;
-	numofnode(root_, nodenum);
-	cout << "nodes number: " << nodenum<<endl;
-
-	//node* _root = insertNewRoot(root_, 657, false);
-	//preorder(_root); cout << endl;
-	//inorder(_root); cout << endl;
-	//postorder(_root); cout << endl;
-
-	//int yhn = layerofval(root_, 93);
-	//cout << "93 is at " << yhn << endl;
+    int ol = depthoftree1(root_);
+    cout << ol << endl;
 
 
-	//insertNode(_root->pright, 1024, true);
-	//preorder(_root); cout << endl;
-	//inorder(_root); cout << endl;
-	//postorder(_root); cout << endl;
+    if (isContain(root_, 93))
+        cout << "contain 93" << endl;
 
-	//insertByVal(root_, 36, 1024, true);
-	//preorder(root_); cout << endl;
-	//inorder(root_); cout << endl;
-	//postorder(root_); cout << endl;
+    if (isContain(root_,500))
+        cout << "contain 500" << endl;
 
-	//delSubTree(root_->pright->pright);
-	//preorder(root_); cout << endl;
-	//inorder(root_); cout << endl;
-	//postorder(root_); cout << endl;
+    int num_ = 0;
+    numOfContain(root_, 23, num_);
 
-	//inGenList(root_);
+    cout << "there are 23 of " << num_ << endl;
 
-	//string gen = "23(46(36(#,93),#),36(71,#))";
+    int ao = numOfContain(root_, 23);
+    cout << "OOOOOO 23 of " << ao << endl;
 
-	//int kk = 0;
-	//node* aroot = create(gen, kk);
-	//preorder(aroot); cout << endl;
-	//inorder(aroot); cout << endl;
-	//postorder(aroot); cout << endl;
-	preorderNoRe(root_);
+    int yu = nodecount(root_);
+    cout << yu << endl;
 
-	inorderNoRe(root_);
+    int nodenum = 0;
+    numofnode(root_, nodenum);
+    cout << "nodes number: " << nodenum<<endl;
 
-	postorderNoRe(root_);
+    //node* _root = insertNewRoot(root_, 657, false);
+    //preorder(_root); cout << endl;
+    //inorder(_root); cout << endl;
+    //postorder(_root); cout << endl;
 
-	levelorder(root_);
+    //int yhn = layerofval(root_, 93);
+    //cout << "93 is at " << yhn << endl;
 
 
-	
-	int target = 931;
-	h = firstsee(root_,target);
-	cout << target << " first appear in " << h << "TH layer" <<endl;
+    //insertNode(_root->pright, 1024, true);
+    //preorder(_root); cout << endl;
+    //inorder(_root); cout << endl;
+    //postorder(_root); cout << endl;
+
+    //insertByVal(root_, 36, 1024, true);
+    //preorder(root_); cout << endl;
+    //inorder(root_); cout << endl;
+    //postorder(root_); cout << endl;
+
+    //delSubTree(root_->pright->pright);
+    //preorder(root_); cout << endl;
+    //inorder(root_); cout << endl;
+    //postorder(root_); cout << endl;
+
+    //inGenList(root_);
+
+    //string gen = "23(46(36(#,93),#),36(71,#))";
+
+    //int kk = 0;
+    //node* aroot = create(gen, kk);
+    //preorder(aroot); cout << endl;
+    //inorder(aroot); cout << endl;
+    //postorder(aroot); cout << endl;
+    preorderNoRe(root_);
+
+    inorderNoRe(root_);
+
+    postorderNoRe(root_);
+
+    levelorder(root_);
+
+
+
+    int target = 931;
+    h = firstsee(root_,target);
+    cout << target << " first appear in " << h << "TH layer" <<endl;
 #endif
-	return 0;
+    return 0;
 }

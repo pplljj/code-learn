@@ -15,543 +15,543 @@ using namespace std;
 
 namespace bbt{
 
-	const int max_size = 10000;
+    const int max_size = 10000;
 
-	node* create(int nums[], int n, int& i)
-	{
-		node* p = NULL;
-		if (i < n)
-		{
-			int value = nums[i];
-			i++;
+    node* create(int nums[], int n, int& i)
+    {
+        node* p = NULL;
+        if (i < n)
+        {
+            int value = nums[i];
+            i++;
 
-			if (value != -9999)
-			{
-				p = new node;
-				p->val = value;
-				p->pleft = create(nums, n, i);
-				p->pright = create(nums, n, i);
-			}
-		}
-		return p;
-	}
+            if (value != -9999)
+            {
+                p = new node;
+                p->val = value;
+                p->pleft = create(nums, n, i);
+                p->pright = create(nums, n, i);
+            }
+        }
+        return p;
+    }
 
-	node* init(int nums[], int n)
-	{
-		int i=0;
-		node* root = create(nums, n, i);
-		return root;
-	}
+    node* init(int nums[], int n)
+    {
+        int i=0;
+        node* root = create(nums, n, i);
+        return root;
+    }
 
-	/*´ÓtxtÖĞ¶ÁÈ¡Êı¾İ£¬Éú³ÉÒ»¸öÊ÷¡£
-	Êı¾İ¹æÔòÈçÏÂ£º
-	1.ÔªËØÖ®¼äÒÔ¿Õ¸ñ¸ô¿ª
-	2.Êı¾İË³ĞòÄ¬ÈÏÎªÏÈĞò±éÀú(¸ù¡¢×ó¡¢ÓÒ)
-	3.-9999´ú±íµ±Ç°½ÚµãµÄ×ó×ÓÊ÷Ã»ÓĞÔªËØÁË£¬×ªÓÒ×ÓÊ÷
-	4.ÒÑ¾­×ªµ½ÓÒ×ÓÊ÷£¬ÈÔ³öÏÖ-9999£¬
-	  Ôò×ªÍùµ±Ç°½ÚµãµÄ¸¸½ÚµãµÄÓÒ×ÓÊ÷¡£ÒÔ´ËÀàÍÆ¡£
-	5.Àı×Ó:
-	  TXTÊı¾İ£º
-	    1 2 3 -9999 -9999 4 -9999 -9999 5 6 -9999 -9999 7
-	  Éú³ÉµÄÊ÷ÈçÏÂ£º
-	              1
-				  /\
-				 /  \
-				/    \
-			   /      \
-			  /        \
-			 2          5
-			/ \        / \
-		   3   4      6   7
-		  /\   /\    /\   
-		 #  # #  #  #  # 
-	*/
+    /*ä»txtä¸­è¯»å–æ•°æ®ï¼Œç”Ÿæˆä¸€ä¸ªæ ‘ã€‚
+    æ•°æ®è§„åˆ™å¦‚ä¸‹ï¼š
+    1.å…ƒç´ ä¹‹é—´ä»¥ç©ºæ ¼éš”å¼€
+    2.æ•°æ®é¡ºåºé»˜è®¤ä¸ºå…ˆåºéå†(æ ¹ã€å·¦ã€å³)
+    3.-9999ä»£è¡¨å½“å‰èŠ‚ç‚¹çš„å·¦å­æ ‘æ²¡æœ‰å…ƒç´ äº†ï¼Œè½¬å³å­æ ‘
+    4.å·²ç»è½¬åˆ°å³å­æ ‘ï¼Œä»å‡ºç°-9999ï¼Œ
+      åˆ™è½¬å¾€å½“å‰èŠ‚ç‚¹çš„çˆ¶èŠ‚ç‚¹çš„å³å­æ ‘ã€‚ä»¥æ­¤ç±»æ¨ã€‚
+    5.ä¾‹å­:
+      TXTæ•°æ®ï¼š
+        1 2 3 -9999 -9999 4 -9999 -9999 5 6 -9999 -9999 7
+      ç”Ÿæˆçš„æ ‘å¦‚ä¸‹ï¼š
+                  1
+                  /\
+                 /  \
+                /    \
+               /      \
+              /        \
+             2          5
+            / \        / \
+           3   4      6   7
+          /\   /\    /\
+         #  # #  #  #  # 
+    */
 
-	//³õÊ¼»¯¶ş²æÊ÷£¨ÊäÈë¶à¸öÊı×ÖÈ»ºó»»ĞĞÔò¿ªÊ¼¹¹½¨£©
-	/*
-	int number[max_size];
-	int num;
-	int ct = 0;
-	while (cin >> num)
-	{
-		number[ct] = num;
-		++ct;
+    //åˆå§‹åŒ–äºŒå‰æ ‘ï¼ˆè¾“å…¥å¤šä¸ªæ•°å­—ç„¶åæ¢è¡Œåˆ™å¼€å§‹æ„å»ºï¼‰
+    /*
+    int number[max_size];
+    int num;
+    int ct = 0;
+    while (cin >> num)
+    {
+        number[ct] = num;
+        ++ct;
 
-		if (cin.get() == '\n')break;
-	}
+        if (cin.get() == '\n')break;
+    }
 
-	int len = ct;
+    int len = ct;
 
-	for (int i = 0; i < len; i++)
-	{
-		cout << number[i] << " ";
-	} cout << endl;
+    for (int i = 0; i < len; i++)
+    {
+        cout << number[i] << " ";
+    } cout << endl;
 
-	node* root_ = init(number, len);
-	*/
-	//³õÊ¼»¯¶ş²æÊ÷£¨ÊäÈë¶à¸öÊı×ÖÈ»ºó»»ĞĞÔò¿ªÊ¼¹¹½¨£©
-
-
-
-	//´ÓÎÄ¼ş¹¹½¨
-	/*
-	int number[max_size];
-	int num;
-	int ct = 0;
-
-	string data = "D:\\Program Files\\Projects\\datastruct\\Debug\\data.txt";
-	ifstream input(data);
-
-	while (input >> num)
-	{
-		number[ct] = num;
-		++ct;
-	}
-
-	int len = ct;
-
-	for (int i = 0; i < len; i++)
-	{
-	cout << number[i] << " ";
-	} cout << endl;
-
-	node* root_ = init(number, len);
-	*/
-	//´ÓÎÄ¼ş¹¹½¨
-
-	//ÏÈĞò±éÀú
-	void preorder(node* root)
-	{
-		if (root == NULL)
-			cout << "# ";
-		else{
-			cout << root->val<<" ";
-			preorder(root->pleft);
-			preorder(root->pright);
-		}
-	}
+    node* root_ = init(number, len);
+    */
+    //åˆå§‹åŒ–äºŒå‰æ ‘ï¼ˆè¾“å…¥å¤šä¸ªæ•°å­—ç„¶åæ¢è¡Œåˆ™å¼€å§‹æ„å»ºï¼‰
 
 
-	//ÖĞĞò±éÀú
-	void inorder(node* root)
-	{
-		if (root == NULL)
-			cout << "# ";
-		else{
-			inorder(root->pleft);
-			cout << root->val << " ";
-			inorder(root->pright);
-		}
-	}
+
+    //ä»æ–‡ä»¶æ„å»º
+    /*
+    int number[max_size];
+    int num;
+    int ct = 0;
+
+    string data = "D:\\Program Files\\Projects\\datastruct\\Debug\\data.txt";
+    ifstream input(data);
+
+    while (input >> num)
+    {
+        number[ct] = num;
+        ++ct;
+    }
+
+    int len = ct;
+
+    for (int i = 0; i < len; i++)
+    {
+    cout << number[i] << " ";
+    } cout << endl;
+
+    node* root_ = init(number, len);
+    */
+    //ä»æ–‡ä»¶æ„å»º
+
+    //å…ˆåºéå†
+    void preorder(node* root)
+    {
+        if (root == NULL)
+            cout << "# ";
+        else{
+            cout << root->val<<" ";
+            preorder(root->pleft);
+            preorder(root->pright);
+        }
+    }
 
 
-	//ºóĞò±éÀú
-	void postorder(node* root)
-	{
-		if (root == NULL)
-			cout << "# ";
-		else{
-			postorder(root->pleft);
-			postorder(root->pright);
-			cout << root->val << " ";
-		}
-	}
+    //ä¸­åºéå†
+    void inorder(node* root)
+    {
+        if (root == NULL)
+            cout << "# ";
+        else{
+            inorder(root->pleft);
+            cout << root->val << " ";
+            inorder(root->pright);
+        }
+    }
 
-	//½ÚµãÊı
-	void numofnode(node* root, int& num)
-	{
-		if (root != NULL)
-		{
-			num++;
-			numofnode(root->pleft, num);
-			numofnode(root->pright, num);
-		}
-	}
-	
-	//·µ»Ø½ÚµãÊı
-	int nodecount(node* root)
-	{
-		if(root==NULL) return 0;
-		else return 1 + nodecount(root->pleft) + nodecount(root->pright);
-	}
-	
-	//Ò¶×ÓÊı
-	void numofleaf(node* root, int& num)
-	{
-		if (root != NULL){
-			if ((root->pleft == NULL) && (root->pright == NULL))
-			{
-				cout << "\nleaf value: " << root->val;
-				num++;
-			}
 
-			numofleaf(root->pleft, num);
-			numofleaf(root->pright, num);
-		}
-	}
+    //ååºéå†
+    void postorder(node* root)
+    {
+        if (root == NULL)
+            cout << "# ";
+        else{
+            postorder(root->pleft);
+            postorder(root->pright);
+            cout << root->val << " ";
+        }
+    }
+
+    //èŠ‚ç‚¹æ•°
+    void numofnode(node* root, int& num)
+    {
+        if (root != NULL)
+        {
+            num++;
+            numofnode(root->pleft, num);
+            numofnode(root->pright, num);
+        }
+    }
     
-	//·µ»ØÒ¶×ÓÊı
-	int numofleaf(node* root)
-	{
-		if(root==NULL)
-			return 0;
-		else if((root->pleft == NULL) && (root->pright == NULL))
-		return 1;
-		return numofleaf(root->pleft) + numofleaf(root->pright);
-	}
-	
-	//Éî¶È
-	void depthoftree(node* root, int k, int& h)
-	{
-		if (root != NULL)
-		{
-			k++;
-			if (k > h)
-				h = k;
+    //è¿”å›èŠ‚ç‚¹æ•°
+    int nodecount(node* root)
+    {
+        if(root==NULL) return 0;
+        else return 1 + nodecount(root->pleft) + nodecount(root->pright);
+    }
+    
+    //å¶å­æ•°
+    void numofleaf(node* root, int& num)
+    {
+        if (root != NULL){
+            if ((root->pleft == NULL) && (root->pright == NULL))
+            {
+                cout << "\nleaf value: " << root->val;
+                num++;
+            }
 
-			depthoftree(root->pleft, k, h);
-			depthoftree(root->pright, k, h);
-		}
-	}
+            numofleaf(root->pleft, num);
+            numofleaf(root->pright, num);
+        }
+    }
+    
+    //è¿”å›å¶å­æ•°
+    int numofleaf(node* root)
+    {
+        if(root==NULL)
+            return 0;
+        else if((root->pleft == NULL) && (root->pright == NULL))
+        return 1;
+        return numofleaf(root->pleft) + numofleaf(root->pright);
+    }
+    
+    //æ·±åº¦
+    void depthoftree(node* root, int k, int& h)
+    {
+        if (root != NULL)
+        {
+            k++;
+            if (k > h)
+                h = k;
 
-	//·µ»ØÉî¶È
-	int depthoftree1(node* root)
-	{
-		if(root==NULL)
-			return 0;
-		else{
-			int dep1 = depthoftree1(root->pleft);
-			int dep2 = depthoftree1(root->pright);
-			return dep1>dep2 ? (dep1+1) : (dep2+1);
-		}
-		
-	}
-	
-	//ÊÇ·ñº¬ÌØ¶¨Öµ
-	bool isContain(node* root, int value)
-	{
-		if (root != NULL){
-			if (root->val == value)
-				return true;
+            depthoftree(root->pleft, k, h);
+            depthoftree(root->pright, k, h);
+        }
+    }
 
-			if (isContain(root->pleft, value) || isContain(root->pright, value))
-				return true;
-		}
-		else return false;
-	}
+    //è¿”å›æ·±åº¦
+    int depthoftree1(node* root)
+    {
+        if(root==NULL)
+            return 0;
+        else{
+            int dep1 = depthoftree1(root->pleft);
+            int dep2 = depthoftree1(root->pright);
+            return dep1>dep2 ? (dep1+1) : (dep2+1);
+        }
+        
+    }
+    
+    //æ˜¯å¦å«ç‰¹å®šå€¼
+    bool isContain(node* root, int value)
+    {
+        if (root != NULL){
+            if (root->val == value)
+                return true;
 
-	//º¬ÓĞÄ³ÖµµÄ¸öÊı
-	void numOfContain(node* root, int value, int& res)
-	{
-		if (root != NULL){
-			if (root->val == value)
-			{
-				res++;
-			}
-			numOfContain(root->pleft, value, res);
-			numOfContain(root->pright, value, res);
-		}
-	}
-	
-	//·µ»ØÄ³ÖµµÄ¸öÊı
-	int numOfContain(node* root, int value)
-	{
-		if (root == NULL) return 0;
-		else if (root->val == value)
-			return 1 + numOfContain(root->pleft, value) + numOfContain(root->pright, value);
-		else
-		return numOfContain(root->pleft, value) + numOfContain(root->pright, value);
-	}
+            if (isContain(root->pleft, value) || isContain(root->pright, value))
+                return true;
+        }
+        else return false;
+    }
 
-	//²åÈëĞÂµÄ¸ù½Úµã£¬°ÑÔ­ÏÈµÄÊ÷×÷Îª×ó»òÕßÓÒ×ÓÊ÷
-	node* insertNewRoot(node* root, int value, bool left)
-	{
-		node* newroot = NULL;
-		newroot = new node;
-		newroot->val = value;
-		if (left)
-		{
-			newroot->pleft = root;
-		}
-		else{
-			newroot->pright = root;
-		}
-		return newroot;
-	}
+    //å«æœ‰æŸå€¼çš„ä¸ªæ•°
+    void numOfContain(node* root, int value, int& res)
+    {
+        if (root != NULL){
+            if (root->val == value)
+            {
+                res++;
+            }
+            numOfContain(root->pleft, value, res);
+            numOfContain(root->pright, value, res);
+        }
+    }
+    
+    //è¿”å›æŸå€¼çš„ä¸ªæ•°
+    int numOfContain(node* root, int value)
+    {
+        if (root == NULL) return 0;
+        else if (root->val == value)
+            return 1 + numOfContain(root->pleft, value) + numOfContain(root->pright, value);
+        else
+        return numOfContain(root->pleft, value) + numOfContain(root->pright, value);
+    }
 
-	//²åÈëĞÂ½Úµã
-	void insertNode(node* parent, int value, bool left)
-	{
-		node* tp = new node;
-		tp->val = value;
-		if (left)
-		{
-			tp->pleft = parent->pleft;
-			parent->pleft = tp;
-		}
-		else{
-			tp->pright = parent->pright;
-			parent->pright = tp;
-		}
-	}
+    //æ’å…¥æ–°çš„æ ¹èŠ‚ç‚¹ï¼ŒæŠŠåŸå…ˆçš„æ ‘ä½œä¸ºå·¦æˆ–è€…å³å­æ ‘
+    node* insertNewRoot(node* root, int value, bool left)
+    {
+        node* newroot = NULL;
+        newroot = new node;
+        newroot->val = value;
+        if (left)
+        {
+            newroot->pleft = root;
+        }
+        else{
+            newroot->pright = root;
+        }
+        return newroot;
+    }
 
-	//ÔÚ¿ÕÖ¸ÕëÓò²åÈëÁíÒ»¿ÅÊ÷
-	void insertAnotherTree(node* parent, node* ano_root, bool left)
-	{
-		if ( left&&(parent->pleft != NULL) || (!left)&&(parent->pright != NULL))
-		{
-			cout << "no empty points in inserting area!" <<endl;
-			return;
-		}
+    //æ’å…¥æ–°èŠ‚ç‚¹
+    void insertNode(node* parent, int value, bool left)
+    {
+        node* tp = new node;
+        tp->val = value;
+        if (left)
+        {
+            tp->pleft = parent->pleft;
+            parent->pleft = tp;
+        }
+        else{
+            tp->pright = parent->pright;
+            parent->pright = tp;
+        }
+    }
 
-		if (left)
-		{
-			parent->pleft = ano_root;
-		}
-		else{
-			parent->pright = ano_root;
-		}
-	}
+    //åœ¨ç©ºæŒ‡é’ˆåŸŸæ’å…¥å¦ä¸€é¢—æ ‘
+    void insertAnotherTree(node* parent, node* ano_root, bool left)
+    {
+        if ( left&&(parent->pleft != NULL) || (!left)&&(parent->pright != NULL))
+        {
+            cout << "no empty points in inserting area!" <<endl;
+            return;
+        }
 
-	//ÔÚÖµÎªtargetµÄ½Úµã×ó»òÕßÓÒ²åÈëĞÂ½Úµã
-	void insertByVal(node* root, int target, int value, bool left)
-	{
-		if (root != NULL)
-		{
-			if (root->val == target)
-				insertNode(root, value, left);
+        if (left)
+        {
+            parent->pleft = ano_root;
+        }
+        else{
+            parent->pright = ano_root;
+        }
+    }
 
-			insertByVal(root->pleft, target, value, left);
-			insertByVal(root->pright, target, value, left);
-		}
-	}
-	
-	//µİ¹éÉ¾³ı×ÓÊ÷
-	void delSubTreeRe(node* parent)
-	{
-		if (parent != NULL)
-		{
-			delSubTreeRe(parent->pleft);
-			delSubTreeRe(parent->pright);
-			delete parent;
-		}
-	}
+    //åœ¨å€¼ä¸ºtargetçš„èŠ‚ç‚¹å·¦æˆ–è€…å³æ’å…¥æ–°èŠ‚ç‚¹
+    void insertByVal(node* root, int target, int value, bool left)
+    {
+        if (root != NULL)
+        {
+            if (root->val == target)
+                insertNode(root, value, left);
 
-	//É¾³ıÒÔparentÎª¸ù½ÚµãµÄ×ÓÊ÷
-	void delSubTree(node*& parent)
-	{
-		delSubTreeRe(parent);
-		parent = NULL;
-	}
+            insertByVal(root->pleft, target, value, left);
+            insertByVal(root->pright, target, value, left);
+        }
+    }
+    
+    //é€’å½’åˆ é™¤å­æ ‘
+    void delSubTreeRe(node* parent)
+    {
+        if (parent != NULL)
+        {
+            delSubTreeRe(parent->pleft);
+            delSubTreeRe(parent->pright);
+            delete parent;
+        }
+    }
 
-	//É¾³ı½ÚµãµÄ×ó×ÓÊ÷»òÓÒ×ÓÊ÷
-	void delSideSubTree(node* parent, bool left)
-	{
-		if(parent != NULL)
-		{
-			if (left)
-			{
-				delSubTree(parent->pleft);
-			}
-			else{
-				delSubTree(parent->pright);
-			}
-		}
-	}
+    //åˆ é™¤ä»¥parentä¸ºæ ¹èŠ‚ç‚¹çš„å­æ ‘
+    void delSubTree(node*& parent)
+    {
+        delSubTreeRe(parent);
+        parent = NULL;
+    }
 
-	//¹ãÒå±í´òÓ¡Ê÷
-	void inGenList(node* root)
-	{
-		if (root == NULL) cout << "#";
-		else{
-			cout << root->val;
-			if (root->pleft != NULL || root->pright != NULL)
-			{
-				cout << "(";
-				inGenList(root->pleft);
-				cout << ",";
-				inGenList(root->pright);
-				cout << ")";
-			}
-		}
-	}
-	
-	//µİ¹é´Ó¹ãÒå±í¹¹½¨Ê÷£¨i³õÊ¼»¯Îª0£©
-	node* create(string& genl, int& i)
-	{
-		if (genl[i] == '#')
-		{
-			i++; return NULL;
-		}
+    //åˆ é™¤èŠ‚ç‚¹çš„å·¦å­æ ‘æˆ–å³å­æ ‘
+    void delSideSubTree(node* parent, bool left)
+    {
+        if(parent != NULL)
+        {
+            if (left)
+            {
+                delSubTree(parent->pleft);
+            }
+            else{
+                delSubTree(parent->pright);
+            }
+        }
+    }
 
-		int n = 0;
-		char ch;
-		while (i < genl.size() && (ch = genl[i + n]) && ch != '(' && ch != ',' && ch != ')')
-			n++;
+    //å¹¿ä¹‰è¡¨æ‰“å°æ ‘
+    void inGenList(node* root)
+    {
+        if (root == NULL) cout << "#";
+        else{
+            cout << root->val;
+            if (root->pleft != NULL || root->pright != NULL)
+            {
+                cout << "(";
+                inGenList(root->pleft);
+                cout << ",";
+                inGenList(root->pright);
+                cout << ")";
+            }
+        }
+    }
+    
+    //é€’å½’ä»å¹¿ä¹‰è¡¨æ„å»ºæ ‘ï¼ˆiåˆå§‹åŒ–ä¸º0ï¼‰
+    node* create(string& genl, int& i)
+    {
+        if (genl[i] == '#')
+        {
+            i++; return NULL;
+        }
 
-		string str = genl.substr(i, n);
-		i += n;
+        int n = 0;
+        char ch;
+        while (i < genl.size() && (ch = genl[i + n]) && ch != '(' && ch != ',' && ch != ')')
+            n++;
 
-		node* p = new node;
-		p->val = atoi(str.c_str());
+        string str = genl.substr(i, n);
+        i += n;
 
-		if (genl[i] == '(')
-		{
-			i++;
-			p->pleft = create(genl, i);
-			i++;
-			p->pright = create(genl, i);
-			i++;
-		}
-		return p;
-	}
+        node* p = new node;
+        p->val = atoi(str.c_str());
 
-	//·Çµİ¹éÏÈĞò±éÀú
-	//----¸ù½ÚµãÆğÍù×ó×ß£¬Óöµ½Öµ¾Í´òÓ¡£¨¼´´òÓ¡¸ù£©²¢ÈëÕ»£¬Ö±µ½Óöµ½Ä³½ÚµãXµÄ×ó×ÓÊ÷Îª¿Õ£¬´ËÊ±Õ»¶¥ÎªX£¬ÍË³öÄÚwhileÑ­»·
-	//----½øÈëifÓï¾ä£¬X³öÕ»£¬Ö¸ÕëpÖÃÎªXµÄÓÒ×ÓÊ÷£¬´òÓ¡ÍêÓÒ×ÓÊ÷£¬Óöµ½¿ÕÖ¸ÕëÖ´ĞĞifÓï¾äÖĞµÄ³öÕ»½«XµÄparentµ¯³ö£¬½øÈëÓÒ×ÓÊ÷
-	//----ÒÀ´ÎÑ­»·»ØËİµ½¸ù½Úµã£¬½øÈërootµÄÓÒ×ÓÊ÷
-	void preorderNoRe(node* root)
-	{
-		if (!root) return;
-		stack<node*> st;
-		node* p = root;
-		while (p || !st.empty())
-		{
-			while (p)
-			{
-				cout << p->val << " ";
-				st.push(p);
-				p = p->pleft;
-			}
+        if (genl[i] == '(')
+        {
+            i++;
+            p->pleft = create(genl, i);
+            i++;
+            p->pright = create(genl, i);
+            i++;
+        }
+        return p;
+    }
 
-			if (!st.empty())
-			{
-				p = st.top();
-				st.pop();
-				p = p->pright;
-			}
-		}
-		cout << endl;
-	}
+    //éé€’å½’å…ˆåºéå†
+    //----æ ¹èŠ‚ç‚¹èµ·å¾€å·¦èµ°ï¼Œé‡åˆ°å€¼å°±æ‰“å°ï¼ˆå³æ‰“å°æ ¹ï¼‰å¹¶å…¥æ ˆï¼Œç›´åˆ°é‡åˆ°æŸèŠ‚ç‚¹Xçš„å·¦å­æ ‘ä¸ºç©ºï¼Œæ­¤æ—¶æ ˆé¡¶ä¸ºXï¼Œé€€å‡ºå†…whileå¾ªç¯
+    //----è¿›å…¥ifè¯­å¥ï¼ŒXå‡ºæ ˆï¼ŒæŒ‡é’ˆpç½®ä¸ºXçš„å³å­æ ‘ï¼Œæ‰“å°å®Œå³å­æ ‘ï¼Œé‡åˆ°ç©ºæŒ‡é’ˆæ‰§è¡Œifè¯­å¥ä¸­çš„å‡ºæ ˆå°†Xçš„parentå¼¹å‡ºï¼Œè¿›å…¥å³å­æ ‘
+    //----ä¾æ¬¡å¾ªç¯å›æº¯åˆ°æ ¹èŠ‚ç‚¹ï¼Œè¿›å…¥rootçš„å³å­æ ‘
+    void preorderNoRe(node* root)
+    {
+        if (!root) return;
+        stack<node*> st;
+        node* p = root;
+        while (p || !st.empty())
+        {
+            while (p)
+            {
+                cout << p->val << " ";
+                st.push(p);
+                p = p->pleft;
+            }
 
-	//·Çµİ¹éÖĞĞò±éÀú 
-	//----¸ù½ÚµãÆğÍù×ó×ß£¬ÓĞÖµ¾ÍÈëÕ»£¬Ö±µ½Óöµ½Ä³½ÚµãXµÄ×ó×ÓÊ÷Îª¿Õ£¨´ËÊ±Õ»¶¥ÎªX£©£¬X³öÕ»£¬´òÓ¡X£¬·ÃÎÊXµÄÓÒ×ÓÊ÷
-	//----XµÄÓÒ×ÓÊ÷·ÃÎÊÍêºó£¬»áÓÉÓÚ¿ÕÖ¸Õëp´Ó¶ø½øÈëelseÓï¾ä£¬XµÄparent½Úµã³öÕ»£¬´òÓ¡parent½Úµã£¬Ò»Ö±ÍùÉÏ»ØËİ
-	//----»ØËİµ½¸ù½Úµã£¬´òÓ¡root£¬·ÃÎÊrootµÄÓÒ×ÓÊ÷
-	void inorderNoRe(node* root)
-	{
-		stack<node*> st;
-		node* p = root;
-		while (p || !st.empty()){
-			if (p) {
-				st.push(p);
-				p = p->pleft;
-			}
-			else{
-				p = st.top();
-				st.pop();
-				cout << p->val << " ";
-				p = p->pright;
-			}
-		}
-		cout << endl;
-	}
+            if (!st.empty())
+            {
+                p = st.top();
+                st.pop();
+                p = p->pright;
+            }
+        }
+        cout << endl;
+    }
 
-	//ºóĞò·Çµİ¹é±éÀú
-	//----¸ù½ÚµãÆğÍù×ó×ß£¬ÓĞÖµ¾ÍÈëÕ»£¬Ö±µ½Óöµ½Ä³½ÚµãXµÄ×ó×ÓÊ÷Îª¿Õ£¨´ËÊ±Õ»¶¥ÎªX£©£¬Èç¹ûXÓĞÓÒ×ÓÊ÷£¬ÔòifÓï¾ä²»Ö´ĞĞ,Ö´ĞĞelseÓï¾ä
-	//----½øÈëXµÄÓÒ×ÓÊ÷£¬µ½¾¡Í·Ê±p->prightÎª¿Õ£¬Êä³öÓÒ×ÓÊ÷½Úµã£¬pre±»ÖÃÎªX->pright,p±»ÖÃÎªNULL£»È»ºóXÎ»ÓÚÕ»¶¥£¬ifÌõ¼ş·ûºÏ£¬Êä³ö
-	//----X½Úµã£¬p±»ÖÃÎªnull£¬¼ÌĞø³öÕ»Ö±µ½»Øµ½¸ù½Úµã£¬È»ºóÍ¨¹ıelseÓï¾ä½øÈëÓÒ×ÓÊ÷
-	//preµÄ×÷ÓÃ£ºµ±´òÓ¡ÍêrootµÄÓÒ×ÓÊ÷Ê±£¬ÓÒ×ÓÊ÷µÄ¸ù½Úµã±»±ê¼ÇÎªpre£¬ ÕâÑùÎÒÃÇ¾ÍÄÜ½øÈëifÓï¾ä£¨Âú×ãroot->pright == pre£©´òÓ¡¸ù½Úµã£¬´Ó¶ø±£Ö¤×óÓÒ¸ùµÄË³Ğò
-	void postorderNoRe(node* root)
-	{
-		stack<node*> st;
-		node* p = root;
-		node* pre = NULL;
-		while ( p || !st.empty())
-		{
-			while (p)
-			{
-				st.push(p);
-				p = p->pleft;
-			}
-			p = st.top();
-			if (p->pright == NULL || p->pright == pre)
-			{
-				cout << p->val << " ";
-				pre = p;
-				st.pop();
-				p = NULL;
-			}
-			else p = p->pright;	
-		}
-		cout << endl;
-	}
+    //éé€’å½’ä¸­åºéå† 
+    //----æ ¹èŠ‚ç‚¹èµ·å¾€å·¦èµ°ï¼Œæœ‰å€¼å°±å…¥æ ˆï¼Œç›´åˆ°é‡åˆ°æŸèŠ‚ç‚¹Xçš„å·¦å­æ ‘ä¸ºç©ºï¼ˆæ­¤æ—¶æ ˆé¡¶ä¸ºXï¼‰ï¼ŒXå‡ºæ ˆï¼Œæ‰“å°Xï¼Œè®¿é—®Xçš„å³å­æ ‘
+    //----Xçš„å³å­æ ‘è®¿é—®å®Œåï¼Œä¼šç”±äºç©ºæŒ‡é’ˆpä»è€Œè¿›å…¥elseè¯­å¥ï¼ŒXçš„parentèŠ‚ç‚¹å‡ºæ ˆï¼Œæ‰“å°parentèŠ‚ç‚¹ï¼Œä¸€ç›´å¾€ä¸Šå›æº¯
+    //----å›æº¯åˆ°æ ¹èŠ‚ç‚¹ï¼Œæ‰“å°rootï¼Œè®¿é—®rootçš„å³å­æ ‘
+    void inorderNoRe(node* root)
+    {
+        stack<node*> st;
+        node* p = root;
+        while (p || !st.empty()){
+            if (p) {
+                st.push(p);
+                p = p->pleft;
+            }
+            else{
+                p = st.top();
+                st.pop();
+                cout << p->val << " ";
+                p = p->pright;
+            }
+        }
+        cout << endl;
+    }
 
-    //²ã´Î±éÀú
-	void levelorder(node* root)
-	{
-		queue<node*> qe;
-		node* p = root;
-		while (p)
-		{
-			cout << p->val << " ";
-			if (p->pleft)
-				qe.push(p->pleft);
-			if (p->pright)
-				qe.push(p->pright);
+    //ååºéé€’å½’éå†
+    //----æ ¹èŠ‚ç‚¹èµ·å¾€å·¦èµ°ï¼Œæœ‰å€¼å°±å…¥æ ˆï¼Œç›´åˆ°é‡åˆ°æŸèŠ‚ç‚¹Xçš„å·¦å­æ ‘ä¸ºç©ºï¼ˆæ­¤æ—¶æ ˆé¡¶ä¸ºXï¼‰ï¼Œå¦‚æœXæœ‰å³å­æ ‘ï¼Œåˆ™ifè¯­å¥ä¸æ‰§è¡Œ,æ‰§è¡Œelseè¯­å¥
+    //----è¿›å…¥Xçš„å³å­æ ‘ï¼Œåˆ°å°½å¤´æ—¶p->prightä¸ºç©ºï¼Œè¾“å‡ºå³å­æ ‘èŠ‚ç‚¹ï¼Œpreè¢«ç½®ä¸ºX->pright,pè¢«ç½®ä¸ºNULLï¼›ç„¶åXä½äºæ ˆé¡¶ï¼Œifæ¡ä»¶ç¬¦åˆï¼Œè¾“å‡º
+    //----XèŠ‚ç‚¹ï¼Œpè¢«ç½®ä¸ºnullï¼Œç»§ç»­å‡ºæ ˆç›´åˆ°å›åˆ°æ ¹èŠ‚ç‚¹ï¼Œç„¶åé€šè¿‡elseè¯­å¥è¿›å…¥å³å­æ ‘
+    //preçš„ä½œç”¨ï¼šå½“æ‰“å°å®Œrootçš„å³å­æ ‘æ—¶ï¼Œå³å­æ ‘çš„æ ¹èŠ‚ç‚¹è¢«æ ‡è®°ä¸ºpreï¼Œ è¿™æ ·æˆ‘ä»¬å°±èƒ½è¿›å…¥ifè¯­å¥ï¼ˆæ»¡è¶³root->pright == preï¼‰æ‰“å°æ ¹èŠ‚ç‚¹ï¼Œä»è€Œä¿è¯å·¦å³æ ¹çš„é¡ºåº
+    void postorderNoRe(node* root)
+    {
+        stack<node*> st;
+        node* p = root;
+        node* pre = NULL;
+        while ( p || !st.empty())
+        {
+            while (p)
+            {
+                st.push(p);
+                p = p->pleft;
+            }
+            p = st.top();
+            if (p->pright == NULL || p->pright == pre)
+            {
+                cout << p->val << " ";
+                pre = p;
+                st.pop();
+                p = NULL;
+            }
+            else p = p->pright; 
+        }
+        cout << endl;
+    }
 
-			p = qe.empty() ? NULL : qe.front();
-			if (!qe.empty())
-			    qe.pop();
-		}
-		cout << endl;
-	}
+    //å±‚æ¬¡éå†
+    void levelorder(node* root)
+    {
+        queue<node*> qe;
+        node* p = root;
+        while (p)
+        {
+            cout << p->val << " ";
+            if (p->pleft)
+                qe.push(p->pleft);
+            if (p->pright)
+                qe.push(p->pright);
 
-	//Ä³Öµ³öÏÖµÄ²ãÊı(k³õÊ¼ÖµÎª1£¬h³õÊ¼ÖµÎª0£©£¨´Ó×óµ½ÓÒ±éÀú¼ì²é£©
-	void layerofval_l(node* root, int k, int target, int &h)
-	{
-		if (root != NULL)
-		{
-			if (root->val == target)
-			{
-				h = k;
-				return;
-			}
+            p = qe.empty() ? NULL : qe.front();
+            if (!qe.empty())
+                qe.pop();
+        }
+        cout << endl;
+    }
 
-			layerofval_l(root->pleft, k + 1, target, h);
-			layerofval_l(root->pright, k + 1, target, h);
-		}
-	}
-	//Ä³Öµ³öÏÖµÄ²ãÊı(k³õÊ¼ÖµÎª1£¬h³õÊ¼ÖµÎª0£©£¨´ÓÓÒµ½×ó±éÀú¼ì²é£©
-	void layerofval_r(node* root, int k, int target, int &h)
-	{
-		if (root != NULL)
-		{
-			if (root->val == target)
-			{
-				h = k;
-				return;
-			}
+    //æŸå€¼å‡ºç°çš„å±‚æ•°(kåˆå§‹å€¼ä¸º1ï¼Œhåˆå§‹å€¼ä¸º0ï¼‰ï¼ˆä»å·¦åˆ°å³éå†æ£€æŸ¥ï¼‰
+    void layerofval_l(node* root, int k, int target, int &h)
+    {
+        if (root != NULL)
+        {
+            if (root->val == target)
+            {
+                h = k;
+                return;
+            }
 
-			layerofval_r(root->pright, k + 1, target, h);
-			layerofval_r(root->pleft, k + 1, target, h);
-		}
-	}
+            layerofval_l(root->pleft, k + 1, target, h);
+            layerofval_l(root->pright, k + 1, target, h);
+        }
+    }
+    //æŸå€¼å‡ºç°çš„å±‚æ•°(kåˆå§‹å€¼ä¸º1ï¼Œhåˆå§‹å€¼ä¸º0ï¼‰ï¼ˆä»å³åˆ°å·¦éå†æ£€æŸ¥ï¼‰
+    void layerofval_r(node* root, int k, int target, int &h)
+    {
+        if (root != NULL)
+        {
+            if (root->val == target)
+            {
+                h = k;
+                return;
+            }
 
-	//×î½Ó½ü¸ù³öÏÖµÄ²ãÊı
-	int firstsee(node* root, int target)
-	{
-		int k1 = 1;
-		int h1 = 0;
-		layerofval_l(root, k1, target, h1);
+            layerofval_r(root->pright, k + 1, target, h);
+            layerofval_r(root->pleft, k + 1, target, h);
+        }
+    }
 
-		int k2 = 1;
-		int h2 = 0;
-		layerofval_r(root, k2, target, h2);
+    //æœ€æ¥è¿‘æ ¹å‡ºç°çš„å±‚æ•°
+    int firstsee(node* root, int target)
+    {
+        int k1 = 1;
+        int h1 = 0;
+        layerofval_l(root, k1, target, h1);
 
-		return h1 > h2 ? h2 : h1;
+        int k2 = 1;
+        int h2 = 0;
+        layerofval_r(root, k2, target, h2);
 
-	}
+        return h1 > h2 ? h2 : h1;
+
+    }
 
 
 }

@@ -2,149 +2,149 @@
 #include<iostream>
 #include<stdlib.h>
 
-//ÍêÈ«¶ş²æÊ÷¾ÍÊÇÂú¶ş²æÊ÷È±×îºóµÄÒ»Ğ©ÔªËØ
-//±àºÅ´Ó1¿ªÊ¼£¬¹²N¸ö½áµã£¬ÔòÊı×é´óĞ¡ N+1
+//å®Œå…¨äºŒå‰æ ‘å°±æ˜¯æ»¡äºŒå‰æ ‘ç¼ºæœ€åçš„ä¸€äº›å…ƒç´ 
+//ç¼–å·ä»1å¼€å§‹ï¼Œå…±Nä¸ªç»“ç‚¹ï¼Œåˆ™æ•°ç»„å¤§å° N+1
 /*
                 A
-			  /	  \
+              /   \
             B       O
-		  /  \     /  \
+          /  \     /  \
          C    S   M    Q
-	    / \
-	  W    K
+        / \
+      W    K
 
-	node: A B O C S M Q W K
+    node: A B O C S M Q W K
    index: 1 2 3 4 5 6 7 8 9
 
-   ¸ù½Úµã£º 1
+   æ ¹èŠ‚ç‚¹ï¼š 1
 
-   ·Ç¸ù½áµãiµÄ¸¸½áµãÊÇ floor(i/2)
-   ÀıÈç£ºMË÷ÒıÎª6£¬floor(3)=3,¸¸½áµãÎª3£»QÎª7£¬floor(3.5)=3,¸¸½áµãÎª3
+   éæ ¹ç»“ç‚¹içš„çˆ¶ç»“ç‚¹æ˜¯ floor(i/2)
+   ä¾‹å¦‚ï¼šMç´¢å¼•ä¸º6ï¼Œfloor(3)=3,çˆ¶ç»“ç‚¹ä¸º3ï¼›Qä¸º7ï¼Œfloor(3.5)=3,çˆ¶ç»“ç‚¹ä¸º3
 
-   ½áµãiµÄ×óº¢×ÓµÄ½áµãË÷ÒıÊÇ2i
-   ÀıÈç£ºOÎª3£¬ÔòMÎª6£»2i<=N,  ·ñÔòÃ»ÓĞ×óº¢×Ó
+   ç»“ç‚¹içš„å·¦å­©å­çš„ç»“ç‚¹ç´¢å¼•æ˜¯2i
+   ä¾‹å¦‚ï¼šOä¸º3ï¼Œåˆ™Mä¸º6ï¼›2i<=N,  å¦åˆ™æ²¡æœ‰å·¦å­©å­
 
-   ½áµãiµÄÓÒº¢×ÓµÄ½áµãË÷ÒıÊÇ2i+1
-   2i+1<=N, ·ñÔòÃ»ÓĞÓÒº¢×Ó
+   ç»“ç‚¹içš„å³å­©å­çš„ç»“ç‚¹ç´¢å¼•æ˜¯2i+1
+   2i+1<=N, å¦åˆ™æ²¡æœ‰å³å­©å­
 */
 
 
-//ÓÅÏÈ¶ÓÁĞ£ºÓÅÏÈÈ¨£¨¹Ø¼ü×ÖÓÅÏÈ£©
-//×î´óµÄÔÚÊ÷¸ù---×î´ó¶Ñ£¬ÓëÖ®¶ÔÓ¦µÄ×îĞ¡¶Ñ
-//¶Ñ£ºÍêÈ«¶ş²æÊ÷£¬¿ÉÓÃÊı×é±íÊ¾
-//¸ù½ÚµãµÄÖµ È«²¿´óÓÚ(»òĞ¡ÓÚ) ×óÓÒ×ÓÊ÷µÄ½áµãµÄÖµ
+//ä¼˜å…ˆé˜Ÿåˆ—ï¼šä¼˜å…ˆæƒï¼ˆå…³é”®å­—ä¼˜å…ˆï¼‰
+//æœ€å¤§çš„åœ¨æ ‘æ ¹---æœ€å¤§å †ï¼Œä¸ä¹‹å¯¹åº”çš„æœ€å°å †
+//å †ï¼šå®Œå…¨äºŒå‰æ ‘ï¼Œå¯ç”¨æ•°ç»„è¡¨ç¤º
+//æ ¹èŠ‚ç‚¹çš„å€¼ å…¨éƒ¨å¤§äº(æˆ–å°äº) å·¦å³å­æ ‘çš„ç»“ç‚¹çš„å€¼
 
 #define MAX_DATA 999999
 
 typedef struct Heap_ {
-	int *elements; //a point to an array
-	int size; //num of element
-	int capacity; //max capacity
+    int *elements; //a point to an array
+    int size; //num of element
+    int capacity; //max capacity
 } MaxHeap_t;
 
 int isHeapFull(MaxHeap_t* H)
 {
-	if (H->size < H->capacity)
-		return 0;
-	else return 1;
+    if (H->size < H->capacity)
+        return 0;
+    else return 1;
 }
 
 MaxHeap_t* heapCreate(int maxSize)
 {
-	MaxHeap_t* H = (MaxHeap_t*)calloc(1, sizeof(MaxHeap_t));
-	H->elements = (int*)calloc(maxSize + 1, sizeof(int));
-	H->size = 0;
-	H->capacity = maxSize;
-	H->elements[0] = MAX_DATA;
-	return H;
+    MaxHeap_t* H = (MaxHeap_t*)calloc(1, sizeof(MaxHeap_t));
+    H->elements = (int*)calloc(maxSize + 1, sizeof(int));
+    H->size = 0;
+    H->capacity = maxSize;
+    H->elements[0] = MAX_DATA;
+    return H;
 }
 
 
 /// T(N) = O(log2N)
 void heapInsert(MaxHeap_t* H, int data)
 {
-	int i;
-	if (isHeapFull(H)){
-		printf("heap is full.\n");
-		return;
-	}
+    int i;
+    if (isHeapFull(H)){
+        printf("heap is full.\n");
+        return;
+    }
 
-	i = ++H->size; //last element after insert
+    i = ++H->size; //last element after insert
 
-	for (; H->elements[i / 2] < data; i /= 2) //if parent node is smaller than data
-		H->elements[i] = H->elements[i / 2];  //move parent val down
-	                                          //i/2 finally become 0, is the max data, condition break;
-	H->elements[i] = data;
+    for (; H->elements[i / 2] < data; i /= 2) //if parent node is smaller than data
+        H->elements[i] = H->elements[i / 2];  //move parent val down
+                                              //i/2 finally become 0, is the max data, condition break;
+    H->elements[i] = data;
 }
 
 /// T(N) = O(log2N)
 int heapPop(MaxHeap_t* H)
 {
-	int pop_val = H->elements[1];
-	int i = H->size--;
-	int last = H->elements[i];
-	int j = 1;
-	for (; 2 * j + 1 <= H->size && (H->elements[2 * j] > last || H->elements[2 * j + 1] > last);)
-	{
-		H->elements[j] = (H->elements[2 * j] > H->elements[2 * j + 1] ? H->elements[2 * j] : H->elements[2 * j + 1]);
-		j = (H->elements[2 * j] > H->elements[2 * j + 1] ? (2 * j) : (2 * j + 1));
-	}
-	if (2 * j == H->size && H->elements[2 * j] > last) //at bottom have left but no right
-	{
-		H->elements[j] = H->elements[2 * j];
-		j *= 2;
-	}
-	H->elements[j] = last;
-	return pop_val;
+    int pop_val = H->elements[1];
+    int i = H->size--;
+    int last = H->elements[i];
+    int j = 1;
+    for (; 2 * j + 1 <= H->size && (H->elements[2 * j] > last || H->elements[2 * j + 1] > last);)
+    {
+        H->elements[j] = (H->elements[2 * j] > H->elements[2 * j + 1] ? H->elements[2 * j] : H->elements[2 * j + 1]);
+        j = (H->elements[2 * j] > H->elements[2 * j + 1] ? (2 * j) : (2 * j + 1));
+    }
+    if (2 * j == H->size && H->elements[2 * j] > last) //at bottom have left but no right
+    {
+        H->elements[j] = H->elements[2 * j];
+        j *= 2;
+    }
+    H->elements[j] = last;
+    return pop_val;
 }
 
-//½ÌÑ§ÊÓÆµÊµÏÖ
+//æ•™å­¦è§†é¢‘å®ç°
 int heapPopVideo(MaxHeap_t* H)
 {
-	int pop_val = H->elements[1];
-	int last = H->elements[H->size--];
-	int j = 1;
-	int child = 1;
-	for (; j * 2 <= H->size; j = child)
-	{
-		child = 2 * j;
-		if (child != H->size /*this mean child+1 also <= H->size*/ \
-			 && (H->elements[child] < H->elements[child + 1]))
-		{
-			child++; // if right bigger than left
-		}
+    int pop_val = H->elements[1];
+    int last = H->elements[H->size--];
+    int j = 1;
+    int child = 1;
+    for (; j * 2 <= H->size; j = child)
+    {
+        child = 2 * j;
+        if (child != H->size /*this mean child+1 also <= H->size*/ \
+             && (H->elements[child] < H->elements[child + 1]))
+        {
+            child++; // if right bigger than left
+        }
 
-		if (last >= H->elements[child]) break; //last one bigger than left and right child
-		else
-			H->elements[j] = H->elements[child];
-	}
-	H->elements[j] = last;
-	return pop_val;
+        if (last >= H->elements[child]) break; //last one bigger than left and right child
+        else
+            H->elements[j] = H->elements[child];
+    }
+    H->elements[j] = last;
+    return pop_val;
 }
 
-//¸øN¸öÔªËØ½¨Á¢×î´ó¶Ñ
-//1.Í¨¹ı²åÈë²Ù×÷£¬Ò»¸ö¸öÏà¼Ì²åÈë£¬¸´ÔÓ¶ÈÎªO(N*logN)
-//2.ÏßĞÔÊ±¼ä¸´ÔÓ¶È
-////2.1°´ÊäÈëË³Ğò´æÈë£¬Âú×ãÍêÈ«¶ş²æÊ÷µÄ½á¹¹ÌØÕ÷
-////2.2µ÷Õû¸÷¸ö½ÚµãÎ»ÖÃ£¬ÒÔÂú×ã×î´ó¶ÑµÄÓĞĞòÌØĞÔ
+//ç»™Nä¸ªå…ƒç´ å»ºç«‹æœ€å¤§å †
+//1.é€šè¿‡æ’å…¥æ“ä½œï¼Œä¸€ä¸ªä¸ªç›¸ç»§æ’å…¥ï¼Œå¤æ‚åº¦ä¸ºO(N*logN)
+//2.çº¿æ€§æ—¶é—´å¤æ‚åº¦
+////2.1æŒ‰è¾“å…¥é¡ºåºå­˜å…¥ï¼Œæ»¡è¶³å®Œå…¨äºŒå‰æ ‘çš„ç»“æ„ç‰¹å¾
+////2.2è°ƒæ•´å„ä¸ªèŠ‚ç‚¹ä½ç½®ï¼Œä»¥æ»¡è¶³æœ€å¤§å †çš„æœ‰åºç‰¹æ€§
 
 MaxHeap_t* buildHeap(int num[], int size)
 {
-	MaxHeap_t * H = heapCreate(size);
-	for (int i = 0; i < size; i++)
-		H->elements[i + 1] = num[i];
-	H->size = size;
+    MaxHeap_t * H = heapCreate(size);
+    for (int i = 0; i < size; i++)
+        H->elements[i + 1] = num[i];
+    H->size = size;
 
-	for (int child = H->size; child > 0; child--){
-		int parent = child / 2;
-		if (parent == 0) break;
+    for (int child = H->size; child > 0; child--){
+        int parent = child / 2;
+        if (parent == 0) break;
 
-		if (H->elements[parent] < H->elements[child]){
-			int tmp = H->elements[child];
-			H->elements[child] = H->elements[parent];
-			H->elements[parent] = tmp;
-		}
-	}
+        if (H->elements[parent] < H->elements[child]){
+            int tmp = H->elements[child];
+            H->elements[child] = H->elements[parent];
+            H->elements[parent] = tmp;
+        }
+    }
 }
 
 //*************min heap for huffman*******************//
@@ -152,130 +152,130 @@ MaxHeap_t* buildHeap(int num[], int size)
 #define MIN_DATA -999999
 
 typedef struct HuffmanNode{
-	int weight;
-	struct HuffmanNode *left, *right;
+    int weight;
+    struct HuffmanNode *left, *right;
 }HuffmanNode;
 
 typedef struct Min_Heap {
-	HuffmanNode *elements; //a point to an array
-	int size; //num of element
-	int capacity; //max capacity
+    HuffmanNode *elements; //a point to an array
+    int size; //num of element
+    int capacity; //max capacity
 }MinHeap_t;
 
 int isMinHeapFull(MinHeap_t* H)
 {
-	if (H->size < H->capacity)
-		return 0;
-	else return 1;
+    if (H->size < H->capacity)
+        return 0;
+    else return 1;
 }
 
 
 MinHeap_t* minHeapCreate(int maxSize)
 {
-	MinHeap_t* H = (MinHeap_t*)calloc(1, sizeof(MinHeap_t));
-	H->elements = (HuffmanNode*)calloc(maxSize + 1, sizeof(HuffmanNode));
+    MinHeap_t* H = (MinHeap_t*)calloc(1, sizeof(MinHeap_t));
+    H->elements = (HuffmanNode*)calloc(maxSize + 1, sizeof(HuffmanNode));
 
-	H->size = 0;
-	H->capacity = maxSize;
-	H->elements[0].weight = MIN_DATA;
-	return H;
+    H->size = 0;
+    H->capacity = maxSize;
+    H->elements[0].weight = MIN_DATA;
+    return H;
 }
 
 
 /// T(N) = O(log2N)
 void minHeapInsert(MinHeap_t* H, HuffmanNode data)
 {
-	int i;
-	if (isMinHeapFull(H)){
-		printf("heap is full.\n");
-		return;
-	}
+    int i;
+    if (isMinHeapFull(H)){
+        printf("heap is full.\n");
+        return;
+    }
 
-	i = ++H->size; //last element after insert
+    i = ++H->size; //last element after insert
 
-	for (; H->elements[i / 2].weight > data.weight; i /= 2) //if parent node is bigger than data
-	{
-		H->elements[i].weight = H->elements[i / 2].weight;  //move parent val down
-		H->elements[i].left  = H->elements[i / 2].left;
-		H->elements[i].right = H->elements[i / 2].right;
-	}
-	//i/2 finally become 0, is the min data, condition break;
-	H->elements[i].weight = data.weight;
-	H->elements[i].left = data.left;
-	H->elements[i].right = data.right;
+    for (; H->elements[i / 2].weight > data.weight; i /= 2) //if parent node is bigger than data
+    {
+        H->elements[i].weight = H->elements[i / 2].weight;  //move parent val down
+        H->elements[i].left  = H->elements[i / 2].left;
+        H->elements[i].right = H->elements[i / 2].right;
+    }
+    //i/2 finally become 0, is the min data, condition break;
+    H->elements[i].weight = data.weight;
+    H->elements[i].left = data.left;
+    H->elements[i].right = data.right;
 }
 
 /// T(N) = O(log2N)
 HuffmanNode* minHeapPop(MinHeap_t* H)
 {
-	HuffmanNode* PT = (HuffmanNode*)calloc(1, sizeof(HuffmanNode));
-	*PT = H->elements[1];
+    HuffmanNode* PT = (HuffmanNode*)calloc(1, sizeof(HuffmanNode));
+    *PT = H->elements[1];
 
-	HuffmanNode h_last = H->elements[H->size--];
-	int last = h_last.weight;
+    HuffmanNode h_last = H->elements[H->size--];
+    int last = h_last.weight;
 
-	int j = 1;
-	for (; 2 * j + 1 <= H->size && (H->elements[2 * j].weight < last || H->elements[2 * j + 1].weight < last);)
-	{
-		H->elements[j] = (H->elements[2 * j].weight < H->elements[2 * j + 1].weight ? H->elements[2 * j] : H->elements[2 * j + 1]);
-		j = (H->elements[2 * j].weight < H->elements[2 * j + 1].weight ? (2 * j) : (2 * j + 1));
-	}
-	if (2 * j == H->size && H->elements[2 * j].weight < last) //at bottom have left but no right
-	{
-		H->elements[j] = H->elements[2 * j];
-		j *= 2;
-	}
-	H->elements[j] = h_last;
-	return PT;
+    int j = 1;
+    for (; 2 * j + 1 <= H->size && (H->elements[2 * j].weight < last || H->elements[2 * j + 1].weight < last);)
+    {
+        H->elements[j] = (H->elements[2 * j].weight < H->elements[2 * j + 1].weight ? H->elements[2 * j] : H->elements[2 * j + 1]);
+        j = (H->elements[2 * j].weight < H->elements[2 * j + 1].weight ? (2 * j) : (2 * j + 1));
+    }
+    if (2 * j == H->size && H->elements[2 * j].weight < last) //at bottom have left but no right
+    {
+        H->elements[j] = H->elements[2 * j];
+        j *= 2;
+    }
+    H->elements[j] = h_last;
+    return PT;
 }
 
-//½ÌÑ§ÊÓÆµÊµÏÖ
+//æ•™å­¦è§†é¢‘å®ç°
 HuffmanNode* minHeapPopVideo(MinHeap_t* H)
 {
-	HuffmanNode* PT = (HuffmanNode*)calloc(1, sizeof(HuffmanNode));
-	*PT = H->elements[1];
-	HuffmanNode h_last = H->elements[H->size--];
-	int last = h_last.weight;
-	int j = 1;
-	int child = 1;
-	for (; j * 2 <= H->size; j = child)
-	{
-		child = 2 * j;
-		if (child != H->size /*this mean child+1 also <= H->size*/ \
-			&& (H->elements[child].weight > H->elements[child + 1].weight))
-		{
-			child++; // if right smaller than left
-		}
+    HuffmanNode* PT = (HuffmanNode*)calloc(1, sizeof(HuffmanNode));
+    *PT = H->elements[1];
+    HuffmanNode h_last = H->elements[H->size--];
+    int last = h_last.weight;
+    int j = 1;
+    int child = 1;
+    for (; j * 2 <= H->size; j = child)
+    {
+        child = 2 * j;
+        if (child != H->size /*this mean child+1 also <= H->size*/ \
+            && (H->elements[child].weight > H->elements[child + 1].weight))
+        {
+            child++; // if right smaller than left
+        }
 
-		if (last <= H->elements[child].weight) break; //last one bigger than left and right child
-		else
-			H->elements[j] = H->elements[child];
-	}
-	H->elements[j] = h_last;
-	return PT;
+        if (last <= H->elements[child].weight) break; //last one bigger than left and right child
+        else
+            H->elements[j] = H->elements[child];
+    }
+    H->elements[j] = h_last;
+    return PT;
 }
 
-//¸øN¸öÔªËØ½¨Á¢×î´ó¶Ñ
-//1.Í¨¹ı²åÈë²Ù×÷£¬Ò»¸ö¸öÏà¼Ì²åÈë£¬¸´ÔÓ¶ÈÎªO(N*logN)
-//2.ÏßĞÔÊ±¼ä¸´ÔÓ¶È
-////2.1°´ÊäÈëË³Ğò´æÈë£¬Âú×ãÍêÈ«¶ş²æÊ÷µÄ½á¹¹ÌØÕ÷
-////2.2µ÷Õû¸÷¸ö½ÚµãÎ»ÖÃ£¬ÒÔÂú×ã×î´ó¶ÑµÄÓĞĞòÌØĞÔ
+//ç»™Nä¸ªå…ƒç´ å»ºç«‹æœ€å¤§å †
+//1.é€šè¿‡æ’å…¥æ“ä½œï¼Œä¸€ä¸ªä¸ªç›¸ç»§æ’å…¥ï¼Œå¤æ‚åº¦ä¸ºO(N*logN)
+//2.çº¿æ€§æ—¶é—´å¤æ‚åº¦
+////2.1æŒ‰è¾“å…¥é¡ºåºå­˜å…¥ï¼Œæ»¡è¶³å®Œå…¨äºŒå‰æ ‘çš„ç»“æ„ç‰¹å¾
+////2.2è°ƒæ•´å„ä¸ªèŠ‚ç‚¹ä½ç½®ï¼Œä»¥æ»¡è¶³æœ€å¤§å †çš„æœ‰åºç‰¹æ€§
 
 MinHeap_t* buildMinHeap(int num[], int size)
 {
-	MinHeap_t * H = minHeapCreate(size); //after creat, all members are null
-	for (int i = 0; i < size; i++)
-		H->elements[i + 1].weight = num[i];
-	H->size = size;
+    MinHeap_t * H = minHeapCreate(size); //after creat, all members are null
+    for (int i = 0; i < size; i++)
+        H->elements[i + 1].weight = num[i];
+    H->size = size;
 
-	for (int child = H->size; child > 0; child--){
-		int parent = child / 2;
-		if (parent == 0) break;
+    for (int child = H->size; child > 0; child--){
+        int parent = child / 2;
+        if (parent == 0) break;
 
-		if (H->elements[parent].weight > H->elements[child].weight){
-			int tmp = H->elements[child].weight;
-			H->elements[child].weight = H->elements[parent].weight;
-			H->elements[parent].weight = tmp;
-		}
-	}
+        if (H->elements[parent].weight > H->elements[child].weight){
+            int tmp = H->elements[child].weight;
+            H->elements[child].weight = H->elements[parent].weight;
+            H->elements[parent].weight = tmp;
+        }
+    }
 }
