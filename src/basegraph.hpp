@@ -79,6 +79,21 @@ void DFS(int idx, MGraph& graph){
     DFS_inner(idx, visited, graph);
 }
 
+void DFS_inner_adj_list(int idx, int visited[], GraphAdjList& graph) {
+    visited[idx] = 1;
+    EdgeNode * ep = graph.adjList[idx].firstedge;//取得头指针
+    while(ep->next != NULL){
+        ep = ep->next;//当下一个不为空时处理下一个
+        if(visited[ep->adjvex] == 0){
+            DFS_inner_adj_list(ep->adjvex, visited, graph);
+        }
+    }
+}
+
+void DFS_adj_list(int idx, GraphAdjList& graph){
+    int visited[MAXVEX] = {0};
+    DFS_inner_adj_list(idx, visited, graph);
+}
 
 //BFS, breadth first search,广度优先搜索
 //类似于树的层序遍历
@@ -109,4 +124,27 @@ void BFS(int idx, MGraph& graph){
     int visited[MAXVEX] = {0};
     queue<int> q;
     BFS_inner(idx, visited, graph, q);
+}
+
+void BFS_inner_adj_list(int idx, int visited[], GraphAdjList& graph, queue<int>& q){
+    visited[idx] = 1;
+    q.push(idx);
+    while(!q.empty()){
+        int i = q.front();
+        q.pop();
+        EdgeNode * ep = graph.adjList[i].firstedge;//取得头指针
+        while(ep->next != NULL){
+            ep = ep->next;//当下一个不为空时处理下一个
+            if(visited[ep->adjvex] == 0){
+                visited[ep->adjvex] = 1;
+                q.push(ep->adjvex);
+            }
+        }
+    }
+}
+
+void BFS_adj_list(int idx, GraphAdjList& graph){
+    int visited[MAXVEX] = {0};
+    queue<int> q;
+    BFS_inner_adj_list(idx, visited, graph, q);
 }
