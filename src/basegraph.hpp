@@ -113,7 +113,7 @@ void BFS_inner(int idx, int visited[], MGraph& graph, queue<int>& q){
             {
                 if(visited[j] == 0) {
                     visited[j] = 1;
-                    q.push(i);
+                    q.push(j);
                 }
             }
         }//for
@@ -148,3 +148,57 @@ void BFS_adj_list(int idx, GraphAdjList& graph){
     queue<int> q;
     BFS_inner_adj_list(idx, visited, graph, q);
 }
+
+
+
+//连通分量： 无向图的极大连通子图
+
+//强连通： 有向图中两顶点存在双向路径
+//强连通图： 有向图中任意两顶点均强连通
+//强连通分量： 有向图的极大强连通子图
+
+
+//无权图的单源最短路径算法
+//按照递增（非递减）的顺序找出各个顶点的最短路
+//如果使用邻接表实现，T=O(|V|+|E|)
+
+void unweightedShortPath(int idx, MGraph& graph,
+                         int dist[],   /*数组大小:MAXVEX，元素初始化为-1*/
+                         int path[][]) /*数组大小:MAXVEX×MAXVEX，第[i][j]表示从源点idx到点i
+                                         的最短路径经过的第j个点*/
+{
+    queue<int> q;
+    q.push(idx);
+    dist[idx] = 0;
+    while(!q.empty()){
+        int i = q.front();
+        q.pop();
+        for(int j = 0; j< graph.numNodes; j++){
+            if(j != i && (
+              (graph.type == UNDIRECTED && graph.arc[i][j] != 0) /*无向图相邻点*/ ||
+              (graph.type == ORIENTED && (graph.arc[i][j] != INFINITY || graph.arc[j][i] != INFINITY))
+              /*有向图邻接点*/ ))
+            {
+                if(dist[j] == -1) {
+                    dist[j] =dist[i] + 1;
+                    //当前j点的上一个经过的点是i，j是i的邻接点
+                    //第j行第dist[i]列的元素：源点到索引为j的节点的最短路径上经过的第dist[i]个点
+                    //所经过的第0个点即源点
+                    path[j][dist[i]] = i;
+
+                    int next_idx = i;//记下当前的i点，而到达i点所经过的路径点需要去path[i][]数组中寻找
+                    for(int k=dist[i]-1; k>=0; k--)
+                    {
+                        //到达i点的路径去path[i][]中寻找，而第二个[]中的值则是当前路径长度减一
+                        path[j][k] = path[next_idx][k];
+                        //更新新的点，继续往前回溯
+                        next_idx = path[next_idx][k];
+                    }
+
+                    q.push(j);
+                }
+            }
+        }//for
+    }
+}
+
