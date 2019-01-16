@@ -7,7 +7,7 @@ using namespace std;
 #define INFINITY 65535
 
 typedef int Status; /* Status是函数的类型,其值是函数结果状态代码，如OK等 */
-typedef char VertexType; /* 顶点类型应由用户定义  */
+typedef int VertexType; /* 顶点类型应由用户定义  */
 typedef int EdgeType; /* 边上的权值类型应由用户定义 */
 
 typedef enum {
@@ -164,12 +164,12 @@ void BFS_adj_list(int idx, GraphAdjList& graph){
 
 void unweightedShortPath(int idx, MGraph& graph,
                          int dist[],   /*数组大小:MAXVEX，元素初始化为-1*/
-                         int path[][]) /*数组大小:MAXVEX×MAXVEX，第[i][j]表示从源点idx到点i
-                                         的最短路径经过的第j个点*/
+                         int path[]) /*数组大小:MAXVEX，path[i]表示到达i点前经过的点的索引*/
 {
     queue<int> q;
     q.push(idx);
     dist[idx] = 0;
+    path[idx] = idx;
     while(!q.empty()){
         int i = q.front();
         q.pop();
@@ -182,23 +182,16 @@ void unweightedShortPath(int idx, MGraph& graph,
                 if(dist[j] == -1) {
                     dist[j] =dist[i] + 1;
                     //当前j点的上一个经过的点是i，j是i的邻接点
-                    //第j行第dist[i]列的元素：源点到索引为j的节点的最短路径上经过的第dist[i]个点
-                    //所经过的第0个点即源点
-                    path[j][dist[i]] = i;
-
-                    int next_idx = i;//记下当前的i点，而到达i点所经过的路径点需要去path[i][]数组中寻找
-                    for(int k=dist[i]-1; k>=0; k--)
-                    {
-                        //到达i点的路径去path[i][]中寻找，而第二个[]中的值则是当前路径长度减一
-                        path[j][k] = path[next_idx][k];
-                        //更新新的点，继续往前回溯
-                        next_idx = path[next_idx][k];
-                    }
-
+                    //这样求到的path[]数组可以逆向还原出最短路径
+                    //设终点为d,起点为s，则终点前一点为path[d],path[d]前一点为path[path[d]]
+                    //不断迭代，直到path[x] = x = s时，即逆序求出最短路径
+                    path[j] = i;
                     q.push(j);
                 }
             }
         }//for
     }
 }
+
+//Dijkstra
 
