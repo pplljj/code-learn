@@ -162,7 +162,7 @@ void BFS_adj_list(int idx, GraphAdjList& graph){
 //按照递增（非递减）的顺序找出各个顶点的最短路
 //如果使用邻接表实现，T=O(|V|+|E|)
 
-void unweightedShortPath(int idx, MGraph& graph,
+void UnweightedShortestPath(int idx, MGraph& graph,
                          int dist[],   /*数组大小:MAXVEX，元素初始化为-1*/
                          int path[]) /*数组大小:MAXVEX，path[i]表示到达i点前经过的点的索引*/
 {
@@ -194,4 +194,7 @@ void unweightedShortPath(int idx, MGraph& graph,
 }
 
 //Dijkstra
+void DijkstraShortestPath(int idx, MGraph& graph, int dist[], int path[]) {
 
+    return;
+}
