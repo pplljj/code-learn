@@ -161,6 +161,7 @@ void BFS_adj_list(int idx, GraphAdjList& graph){
 //无权图的单源最短路径算法
 //按照递增（非递减）的顺序找出各个顶点的最短路
 //如果使用邻接表实现，T=O(|V|+|E|)
+//使用邻接矩阵实现，T=O(|V|^2)
 
 void UnweightedShortestPath(int idx, MGraph& graph,
                          int dist[],   /*数组大小:MAXVEX，元素初始化为-1*/
@@ -194,7 +195,55 @@ void UnweightedShortestPath(int idx, MGraph& graph,
 }
 
 //Dijkstra
-void DijkstraShortestPath(int idx, MGraph& graph, int dist[], int path[]) {
+//.............|
+//集合S       w |
+//       s*    |   v
+//.............|
+//如上图，s*和w均已被收集进S集合中，v还在外面, v与w邻接
+//加入v前，源点到w只经过S中的点
+//加入v之后，可能的情况是 dist[w] > dist[v] + |v,w|
+//这时需要更新dist[w]
 
+typedef int Patharc[MAXVEX];    /* 用于存储最短路径下标的数组 */
+typedef int ShortPathTable[MAXVEX];/* 用于存储到各点最短路径的权值和 */
+
+void Dijkstra_ShortestPath(MGraph& G, int v0, Patharc *P, ShortPathTable *D) {
+    int v,w,k,min;
+    int final[MAXVEX];/* final[w]=1表示求得顶点v0至vw的最短路径 */
+
+    for(v=0; v<G.numNodes; v++)    /* 初始化数据 */
+    {
+        final[v] = 0;           /* 全部顶点初始化为未知最短路径状态 */
+        //arc中无穷大表示无邻接
+        (*D)[v] = G.arc[v0][v];/* 将与v0点有连线的顶点加上权值 */
+        (*P)[v] = 0;                /* 初始化路径数组P为0  */
+    }
+
+    (*D)[v0] = 0;  /* v0至v0路径为0 */
+    final[v0] = 1;    /* v0至v0不需要求路径 */
+
+    /* 开始主循环，每次求得v0到某个v顶点的最短路径 */
+    for(v=1; v<G.numNodes; v++)  //v在for循环中并没有用到，因为我们只需循环 |V|-1 次
+    {
+        min=INFINITY;    /* 当前所知离v0顶点的最近距离 */
+        for(w=0; w<G.numNodes; w++) /* 寻找离v0最近的顶点 */
+        {
+            if(!final[w] && (*D)[w]<min)
+            {
+                k=w;
+                min = (*D)[w];    /* w顶点离v0顶点更近 */
+            }
+        }
+        final[k] = 1;    /* 将目前找到的最近的顶点置为1 */
+        for(w=0; w<G.numNodes; w++) /* 修正当前最短路径及距离 */
+        {
+            /* 如果经过v顶点的路径比现在这条路径的长度短的话 */
+            if(!final[w] && (min+G.arc[k][w]<(*D)[w]))
+            { /*  说明找到了更短的路径，修改D[w]和P[w] */
+                (*D)[w] = min + G.arc[k][w];  /* 修改当前路径长度 */
+                (*P)[w]=k;
+            }
+        }
+    }
     return;
 }
