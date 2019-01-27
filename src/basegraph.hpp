@@ -247,3 +247,13 @@ void Dijkstra_ShortestPath(MGraph& G, int v0, Patharc *P, ShortPathTable *D) {
     }
     return;
 }
+
+//时间复杂度分析：
+//找最小的dist： 1.直接扫描所有的未收录顶点-O(|V|)
+//               T = O(|V|^2 + |E|)   内外循环|V|^2   访问边 |E|
+//               对于稠密图效果好
+
+//             2.将dist存在最小堆中 - O(log|V|)
+//               更新dist值 - O(log|V|)
+//               T = O(|V|log|V| + |E|log|V|) = O(|E|log|V|)
+//               对于稀疏图效果好
