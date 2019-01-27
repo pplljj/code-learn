@@ -352,3 +352,53 @@ void Print_Floyd_Res(MGraph& G, Patharc2D P, ShortPathTable2D D) {
         printf("\n");
     }
 }
+
+
+//最小生成树
+//*从一个图生成树，树中包含图的全部顶点，树的边以前都在图中
+//*无回路，|V|个顶点有 |V|-1 条边
+//*被树保留下来的边的权重和最小
+//贪心算法: 每一步都要最好的
+
+//Prim算法，一步步生长
+/* Prim算法生成最小生成树 */
+void MiniSpanTree_Prim(MGraph& G)
+{
+    int min, i, j, k;
+    int adjvex[MAXVEX];     /* 保存相关顶点下标 */
+    int lowcost[MAXVEX];    /* 保存相关顶点间边的权值 */
+    lowcost[0] = 0;/* 初始化第一个权值为0，即v0加入生成树 */
+            /* lowcost的值为0，在这里就是此下标的顶点已经加入生成树 */
+    adjvex[0] = 0;          /* 初始化第一个顶点下标为0 */
+    for(i = 1; i < G.numNodes; i++)  /* 循环除下标为0外的全部顶点 */
+    {
+        lowcost[i] = G.arc[0][i];   /* 将v0顶点与之有边的权值存入数组 */
+        adjvex[i] = 0;                  /* 初始化都为v0的下标 */
+    }
+    for(i = 1; i < G.numNodes; i++)  //从1开始，一个一个加入
+    {
+        min = INFINITY; /* 初始化最小权值为∞， */
+                        /* 通常设置为不可能的大数字如32767、65535等 */
+        j = 1;k = 0;
+        while(j < G.numNodes)    /* 循环全部顶点 */
+        {
+            if(lowcost[j]!=0 && lowcost[j] < min)/* 如果权值不为0且权值小于min */
+            {
+                min = lowcost[j];   /* 则让当前权值成为最小值 */
+                k = j;          /* 将当前最小值的下标存入k */
+            }
+            j++;
+        }
+        printf("(%d, %d)\n", adjvex[k], k);/* 打印当前顶点边中权值最小的边 */
+        //所谓顶点边，就是指跟收录进树的节点相连的边
+        lowcost[k] = 0;/* 将当前顶点的权值设置为0,表示此顶点已经完成任务 */
+        for(j = 1; j < G.numNodes; j++)  /* 循环所有顶点 */
+        {
+            if(lowcost[j]!=0 && G.arc[k][j] < lowcost[j])
+            {/* 如果下标为k顶点各边权值小于此前这些顶点未被加入生成树权值 */
+                lowcost[j] = G.arc[k][j];/* 将较小的权值存入lowcost相应位置 */
+                adjvex[j] = k;              /* 将下标为k的顶点存入adjvex */
+            }
+        }
+    }
+}
