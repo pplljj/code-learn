@@ -1,5 +1,6 @@
 #include<iostream>
 #include<queue>
+#include<stdio.h>
 
 using namespace std;
 
@@ -214,7 +215,7 @@ void Dijkstra_ShortestPath(MGraph& G, int v0, Patharc *P, ShortPathTable *D) {
     for(v=0; v<G.numNodes; v++)    /* 初始化数据 */
     {
         final[v] = 0;           /* 全部顶点初始化为未知最短路径状态 */
-        //arc中无穷大表示无邻接
+        //arc中无穷大表示无邻接, arc[i][i]=0
         (*D)[v] = G.arc[v0][v];/* 将与v0点有连线的顶点加上权值 */
         (*P)[v] = 0;                /* 初始化路径数组P为0  */
     }
@@ -248,6 +249,25 @@ void Dijkstra_ShortestPath(MGraph& G, int v0, Patharc *P, ShortPathTable *D) {
     return;
 }
 
+void Print_Dijkstra_Res(MGraph& G, Patharc P, ShortPathTable D, int v0) {
+    int i,j;
+    printf("Shortest path in reverse order:\n");
+    for(i=1;i<G.numNodes;++i)
+    {
+        printf("v%d - v%d : ",v0,i);
+        j=i;
+        while(P[j]!=0)
+        {
+            printf("%d ",P[j]);
+            j=P[j];
+        }
+        printf("\n");
+    }
+    printf("\nshortest distance from source to node:\n");
+    for(i=1;i<G.numNodes;++i)
+        printf("v%d - v%d : %d \n",G.vexs[0],G.vexs[i],D[i]);
+}
+
 //时间复杂度分析：
 //找最小的dist： 1.直接扫描所有的未收录顶点-O(|V|)
 //               T = O(|V|^2 + |E|)   内外循环|V|^2   访问边 |E|
@@ -257,3 +277,78 @@ void Dijkstra_ShortestPath(MGraph& G, int v0, Patharc *P, ShortPathTable *D) {
 //               更新dist值 - O(log|V|)
 //               T = O(|V|log|V| + |E|log|V|) = O(|E|log|V|)
 //               对于稀疏图效果好
+
+
+//Floyd
+//T=O(|V|^3)
+
+typedef int Patharc2D[MAXVEX][MAXVEX];
+typedef int ShortPathTable2D[MAXVEX][MAXVEX];
+
+/* Floyd算法，求网图G中各顶点v到其余顶点w的最短路径P[v][w]及带权长度D[v][w]。 */
+void ShortestPath_Floyd(MGraph& G, Patharc2D *P, ShortPathTable2D *D)
+{
+    int v,w,k;
+    for(v=0; v<G.numNodes; ++v) /* 初始化D与P */
+    {
+        for(w=0; w<G.numNodes; ++w)
+        {
+            (*D)[v][w]=G.arc[v][w]; /* D[v][w]值即为对应点间的权值 */
+            (*P)[v][w]=w;               /* 初始化P */
+        }
+    }
+    for(k=0; k<G.numNodes; ++k)
+    {
+        for(v=0; v<G.numNodes; ++v)
+        {
+            for(w=0; w<G.numNodes; ++w)
+            {
+                if ((*D)[v][w]>(*D)[v][k]+(*D)[k][w])
+                {/* 如果经过下标为k顶点路径比原两点间路径更短 */
+                    (*D)[v][w]=(*D)[v][k]+(*D)[k][w];/* 将当前两点间权值设为更小的一个 */
+                    (*P)[v][w]=(*P)[v][k];/* 路径设置为经过下标为k的顶点 */
+                }
+            }
+        }
+    }
+}
+
+void Print_Floyd_Res(MGraph& G, Patharc2D P, ShortPathTable2D D) {
+    int v,w,k;
+    printf("shortest path:\n");
+    for(v=0; v<G.numNodes; ++v)
+    {
+        for(w=v+1; w<G.numNodes; w++)
+        {
+            printf("v%d-v%d weight: %d ",v,w,D[v][w]);
+            k=P[v][w];              /* 获得第一个路径顶点下标 */
+            printf(" path: %d",v);  /* 打印源点 */
+            while(k!=w)             /* 如果路径顶点下标不是终点 */
+            {
+                printf(" -> %d",k); /* 打印路径顶点 */
+                k=P[k][w];          /* 获得下一个路径顶点下标 */
+            }
+            printf(" -> %d\n",w);   /* 打印终点 */
+        }
+        printf("\n");
+    }
+
+    printf("shortest distance D\n");
+    for(v=0; v<G.numNodes; ++v)
+    {
+        for(w=0; w<G.numNodes; ++w)
+        {
+            printf("%d\t",D[v][w]);
+        }
+        printf("\n");
+    }
+    printf("shortest distance P\n");
+    for(v=0; v<G.numNodes; ++v)
+    {
+        for(w=0; w<G.numNodes; ++w)
+        {
+            printf("%d ",P[v][w]);
+        }
+        printf("\n");
+    }
+}
