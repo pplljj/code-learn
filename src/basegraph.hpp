@@ -6,6 +6,7 @@ using namespace std;
 
 #define MAXVEX 100 /* 最大顶点数，应由用户定义 */
 #define INFINITY 65535
+#define MAXEDGE 100
 
 typedef int Status; /* Status是函数的类型,其值是函数结果状态代码，如OK等 */
 typedef int VertexType; /* 顶点类型应由用户定义  */
@@ -27,6 +28,13 @@ typedef struct
     int numNodes, numEdges; /* 图中当前的顶点数和边数  */
     GraphType type;
 }MGraph;
+
+typedef struct
+{
+    int begin;
+    int end;
+    int weight;
+}Edge;   /* 对边集数组Edge结构的定义 */
 
 //邻接表（适用于稀疏图）
 //N个顶点，g[N]数组中每个 g[i]表示与第i个顶点相邻的点串起来形成的链表
@@ -362,11 +370,16 @@ void Print_Floyd_Res(MGraph& G, Patharc2D P, ShortPathTable2D D) {
 
 //Prim算法，一步步生长
 /* Prim算法生成最小生成树 */
+//T=O(|V|^2) 稠密图更合算
 void MiniSpanTree_Prim(MGraph& G)
 {
     int min, i, j, k;
-    int adjvex[MAXVEX];     /* 保存相关顶点下标 */
-    int lowcost[MAXVEX];    /* 保存相关顶点间边的权值 */
+    int adjvex[MAXVEX];     /* 保存生成树的父母结点关系，adjvex[n]=m表示n结点的父节点是m结点 */
+    int lowcost[MAXVEX];    /* 保存相关顶点间边的权值，最开始保存初始点与其余点的权重，
+                               加入新的点后新点在lowcost对应的值为0，同时把新加入点的边长与lowcost作比较，
+                               保存更新为较小值并更新父节点数组adjvex(如发现K点是当前lowcost非0值中最小的，
+                               如果lowcost[]与arc[K][]比较，发现arc[K][X]更小，那么X点显然是潜在的下一个点，
+                               而该点又从K引出，所以更新其父节点为K) */
     lowcost[0] = 0;/* 初始化第一个权值为0，即v0加入生成树 */
             /* lowcost的值为0，在这里就是此下标的顶点已经加入生成树 */
     adjvex[0] = 0;          /* 初始化第一个顶点下标为0 */
@@ -399,6 +412,102 @@ void MiniSpanTree_Prim(MGraph& G)
                 lowcost[j] = G.arc[k][j];/* 将较小的权值存入lowcost相应位置 */
                 adjvex[j] = k;              /* 将下标为k的顶点存入adjvex */
             }
+        }
+    }
+}
+
+
+//Kruskal算法-将森林合并成树
+//稀疏图更合算
+//初始时，每个结点就是一个树；找最小的边，将结点合成树
+
+/* 交换权值 以及头和尾 */
+static void Swapn_Edge(Edge *edges,int i, int j)
+{
+    int temp;
+    temp = edges[i].begin;
+    edges[i].begin = edges[j].begin;
+    edges[j].begin = temp;
+    temp = edges[i].end;
+    edges[i].end = edges[j].end;
+    edges[j].end = temp;
+    temp = edges[i].weight;
+    edges[i].weight = edges[j].weight;
+    edges[j].weight = temp;
+}
+
+/* 对权值进行排序 */
+static void Sort_Edge(Edge edges[],int numEdges)
+{
+    int i, j;
+    for ( i = 0; i < numEdges; i++)
+    {
+        for ( j = i + 1; j < numEdges; j++)
+        {
+            if (edges[i].weight > edges[j].weight)
+            {
+                Swapn_Edge(edges, i, j);
+            }
+        }
+    }
+    printf("权排序之后的为:\n");
+    for (i = 0; i < numEdges; i++)
+    {
+        printf("(%d, %d) %d\n", edges[i].begin, edges[i].end, edges[i].weight);
+    }
+
+}
+
+/* 查找连线顶点的尾部下标 */
+//如果parent[f]本身就是初始值0，则返回f
+//如果parent[f]大于0，则一直往上追踪到根节点
+static int Find_Parent(int *parent, int f)
+{
+    while ( parent[f] > 0)
+    {
+        f = parent[f];
+    }
+    return f;
+}
+
+void MiniSpanTree_Kruskal(MGraph& G)
+{
+    int i, j, n, m;
+    int k = 0;
+    int parent[MAXVEX];/* 定义一数组用来判断边与边是否形成环路 */ //注意：此parent不等于adjvex之类的父节点关系数组
+    Edge edges[MAXEDGE];/* 定义边集数组,edge的结构为begin,end,weight,均为整型 */
+
+    /* 用来构建边集数组并排序********************* */
+    for ( i = 0; i < G.numNodes-1; i++)
+    {
+        for (j = i + 1; j < G.numNodes; j++)
+        {
+            if (G.arc[i][j]<INFINITY)
+            {
+                edges[k].begin = i;
+                edges[k].end = j;
+                edges[k].weight = G.arc[i][j];
+                k++;
+            }
+        }
+    }
+    Sort_Edge(edges, G.numEdges);
+    /* ******************************************* */
+
+    for (i = 0; i < G.numNodes; i++)
+        parent[i] = 0;  /* 初始化数组值为0 */
+
+    printf("打印最小生成树：\n");
+    for (i = 0; i < G.numEdges; i++)    /* 循环每一条边 */
+    {
+        n = Find_Parent(parent,edges[i].begin);
+        m = Find_Parent(parent,edges[i].end);
+        //n与m相等则说明他们拥有同一个根节点，那么他们与现有树构成回路，所以不打印出来
+        if (n != m) /* 假如n与m不等，说明此边没有与现有的生成树形成环路 */
+        {
+            parent[n] = m;  /* 将此边的结尾顶点放入下标为起点的parent中。 */
+                            /* 表示此顶点已经在生成树集合中 */
+            printf("(%d, %d) %d\n", edges[i].begin, edges[i].end, edges[i].weight);
         }
     }
 }
