@@ -1,6 +1,7 @@
 #include<iostream>
 #include<queue>
 #include<stdio.h>
+#include<stdlib.h>
 
 using namespace std;
 
@@ -50,6 +51,7 @@ typedef struct EdgeNode /* 边表结点  */
 typedef struct VertexNode /* 顶点表结点 */
 {
     VertexType data; /* 顶点域,存储顶点信息 */
+    int in; /*顶点入度*/
     EdgeNode *firstedge;/* 边表头指针 */
 }VertexNode, AdjList[MAXVEX];
 
@@ -477,7 +479,7 @@ void MiniSpanTree_Kruskal(MGraph& G)
     int parent[MAXVEX];/* 定义一数组用来判断边与边是否形成环路 */ //注意：此parent不等于adjvex之类的父节点关系数组
     Edge edges[MAXEDGE];/* 定义边集数组,edge的结构为begin,end,weight,均为整型 */
 
-    /* 用来构建边集数组并排序********************* */
+    /* 用来构建边集数组并排序********************* */ //O(|V|^2)
     for ( i = 0; i < G.numNodes-1; i++)
     {
         for (j = i + 1; j < G.numNodes; j++)
@@ -491,17 +493,17 @@ void MiniSpanTree_Kruskal(MGraph& G)
             }
         }
     }
-    Sort_Edge(edges, G.numEdges);
+    Sort_Edge(edges, G.numEdges);  //最好情况O(|E|),最坏情况O(|E|^2)
     /* ******************************************* */
 
     for (i = 0; i < G.numNodes; i++)
         parent[i] = 0;  /* 初始化数组值为0 */
 
     printf("打印最小生成树：\n");
-    for (i = 0; i < G.numEdges; i++)    /* 循环每一条边 */
+    for (i = 0; i < G.numEdges; i++)    /* 循环每一条边 */  //O(|E|)
     {
-        n = Find_Parent(parent,edges[i].begin);
-        m = Find_Parent(parent,edges[i].end);
+        n = Find_Parent(parent,edges[i].begin);//O(|V|)
+        m = Find_Parent(parent,edges[i].end);  //O(|V|)
         //n与m相等则说明他们拥有同一个根节点，那么他们与现有树构成回路，所以不打印出来
         if (n != m) /* 假如n与m不等，说明此边没有与现有的生成树形成环路 */
         {
@@ -510,4 +512,40 @@ void MiniSpanTree_Kruskal(MGraph& G)
             printf("(%d, %d) %d\n", edges[i].begin, edges[i].end, edges[i].weight);
         }
     }
+}
+
+
+//拓扑排序
+//AOV： activity on vertex: 有向无环图
+//T=O(|V|+|E|)
+/* 拓扑排序，若GL无回路，则输出拓扑排序序列并返回1，若有回路返回0。 */
+Status TopologicalSort(GraphAdjList& GL)
+{
+    EdgeNode *e;
+    int i,k,gettop;
+    int top=0;  /* 用于栈指针下标  */
+    int count=0;/* 用于统计输出顶点的个数  */
+    int *stack; /* 建栈将入度为0的顶点入栈  */
+    stack=(int *)malloc(GL.numNodes * sizeof(int) );
+
+    for(i = 0; i<GL.numNodes; i++)
+        if(0 == GL.adjList[i].in) /* 将入度为0的顶点入栈 */
+            stack[++top]=i;
+    while(top!=0)
+    {
+        gettop=stack[top--];
+        printf("%d -> ",GL.adjList[gettop].data);
+        count++;        /* 输出i号顶点，并计数 */
+        for(e = GL.adjList[gettop].firstedge; e; e = e->next)
+        {
+            k=e->adjvex;
+            if( !(--GL.adjList[k].in) )  /* 将i号顶点的邻接点的入度减1，如果减1后为0，则入栈 */
+                stack[++top]=k;
+        }
+    }
+    printf("\n");
+    if(count < GL.numNodes)
+        return 1;
+    else
+        return 0;
 }
