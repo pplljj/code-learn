@@ -549,3 +549,98 @@ Status TopologicalSort(GraphAdjList& GL)
     else
         return 0;
 }
+
+//关键路径
+//AOE: activity on edge， 一般用于安排项目的工序
+//TODO: understand the code when having time
+static int TopologicalSort_for_AOE(GraphAdjList &GL, int &top2, int* &etv, int* &stack2)
+{    /* 若GL无回路，则输出拓扑排序序列并返回1，若有回路返回0。 */
+    EdgeNode *e;
+    int i,k,gettop;
+    int top=0;  /* 用于栈指针下标  */
+    int count=0;/* 用于统计输出顶点的个数 */
+    int *stack; /* 建栈将入度为0的顶点入栈  */
+    stack=(int *)malloc(GL.numNodes * sizeof(int) );
+    for(i = 0; i<GL.numNodes; i++)
+        if(0 == GL.adjList[i].in) /* 将入度为0的顶点入栈 */
+            stack[++top]=i;
+
+    top2=0;
+    etv=(int *)malloc(GL.numNodes * sizeof(int) ); /* 事件最早发生时间数组 */
+    for(i=0; i<GL.numNodes; i++)
+        etv[i]=0;    /* 初始化 */
+    stack2=(int *)malloc(GL.numNodes * sizeof(int) );/* 初始化拓扑序列栈 */
+
+    printf("TopologicalSort:\t");
+    while(top!=0)
+    {
+        gettop=stack[top--];
+        printf("%d -> ",GL.adjList[gettop].data);
+        count++;        /* 输出i号顶点，并计数 */
+
+        stack2[++top2]=gettop;        /* 将弹出的顶点序号压入拓扑序列的栈 */
+
+        for(e = GL.adjList[gettop].firstedge; e; e = e->next)
+        {
+            k=e->adjvex;
+            if( !(--GL.adjList[k].in) )        /* 将i号顶点的邻接点的入度减1，如果减1后为0，则入栈 */
+                stack[++top]=k;
+
+            if((etv[gettop] + e->info)>etv[k])    /* 求各顶点事件的最早发生时间etv值 */
+                etv[k] = etv[gettop] + e->info;
+        }
+    }
+    printf("\n");
+    if(count < GL.numNodes)
+        return 1;
+    else
+        return 0;
+}
+
+/* 求关键路径,GL为有向网，输出G的各项关键活动 */
+void CriticalPath(GraphAdjList &GL)
+{
+    EdgeNode *e;
+    int i,gettop,k,j;
+    int ete,lte;  /* 声明活动最早发生时间和最迟发生时间变量 */
+    int *etv,*ltv; /* 事件最早发生时间和最迟发生时间数组，全局变量 */
+    int *stack2;   /* 用于存储拓扑序列的栈 */
+    int top2;      /* 用于stack2的指针 */
+    TopologicalSort_for_AOE(GL,top2,etv,stack2);   /* 求拓扑序列，计算数组etv和stack2的值 */
+    ltv=(int *)malloc(GL.numNodes*sizeof(int));/* 事件最早发生时间数组 */
+    for(i=0; i<GL.numNodes; i++)
+        ltv[i]=etv[GL.numNodes-1];    /* 初始化 */
+
+    printf("etv:\t");
+    for(i=0; i<GL.numNodes; i++)
+        printf("%d -> ",etv[i]);
+    printf("\n");
+
+    while(top2!=0)    /* 出栈是求ltv */
+    {
+        gettop=stack2[top2--];
+        for(e = GL.adjList[gettop].firstedge; e; e = e->next)        /* 求各顶点事件的最迟发生时间ltv值 */
+        {
+            k=e->adjvex;
+            if(ltv[k] - e->info < ltv[gettop])
+                ltv[gettop] = ltv[k] - e->info;
+        }
+    }
+
+    printf("ltv:\t");
+    for(i=0; i<GL.numNodes; i++)
+        printf("%d -> ",ltv[i]);
+    printf("\n");
+
+    for(j=0; j<GL.numNodes; j++)        /* 求ete,lte和关键活动 */
+    {
+        for(e = GL.adjList[j].firstedge; e; e = e->next)
+        {
+            k=e->adjvex;
+            ete = etv[j];        /* 活动最早发生时间 */
+            lte = ltv[k] - e->info; /* 活动最迟发生时间 */
+            if(ete == lte)    /* 两者相等即在关键路径上 */
+                printf("<v%d - v%d> length: %d \n",GL.adjList[j].data,GL.adjList[k].data,e->info);
+        }
+    }
+}
