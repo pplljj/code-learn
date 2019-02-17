@@ -603,7 +603,7 @@ void CriticalPath(GraphAdjList &GL)
     EdgeNode *e;
     int i,gettop,k,j;
     int ete,lte;  /* 声明活动最早发生时间和最迟发生时间变量 */
-    int *etv,*ltv; /* 事件最早发生时间和最迟发生时间数组，全局变量 */
+    int *etv,*ltv; /* 事件最早发生时间和最迟发生时间数组 */
     int *stack2;   /* 用于存储拓扑序列的栈 */
     int top2;      /* 用于stack2的指针 */
     TopologicalSort_for_AOE(GL,top2,etv,stack2);   /* 求拓扑序列，计算数组etv和stack2的值 */
