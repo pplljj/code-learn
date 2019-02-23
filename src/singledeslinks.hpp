@@ -1,5 +1,6 @@
 #include<iostream>
-//#include<string>
+#include<string>
+#include<fstream>
 
 using namespace std;
 
@@ -43,6 +44,32 @@ namespace sdl{
             p = tp;
             //tp->pnext = NULL;
             if (cin.get() == '\n')break;
+        }
+        return phead;
+    }
+
+
+    node* create_from_file(const char* file)
+    {
+        std::ifstream in;
+        in.open(file, std::ios::in);
+
+        node* phead = 0;
+        node* tp = 0;
+        node* p = 0;
+        int is_head = 1;
+        int num;
+
+        while(in >> num) {
+            tp = new node;
+            tp->val = num;
+            if(is_head){
+                phead = tp;
+                is_head = 0;
+            }else{
+                p->pnext = tp;
+            }
+            p = tp;
         }
         return phead;
     }
