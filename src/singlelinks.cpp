@@ -17,6 +17,9 @@ int main(){
 
     printlist(singleLink);
 
+    int len = length(singleLink);
+    printf("length is %d\n",len);
+
     return 0;
 }
 
