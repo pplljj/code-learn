@@ -122,26 +122,27 @@ int main()
     preorder(_root); cout << endl;
     inorder(_root); cout << endl;
     postorder(_root); cout << endl;
-#if 0
-    //insertByVal(root_, 36, 1024, true);
-    //preorder(root_); cout << endl;
-    //inorder(root_); cout << endl;
-    //postorder(root_); cout << endl;
 
-    //delSubTree(root_->pright->pright);
-    //preorder(root_); cout << endl;
-    //inorder(root_); cout << endl;
-    //postorder(root_); cout << endl;
+    insertByVal(root_, 36, 1024, true);
+    preorder(root_); cout << endl;
+    inorder(root_); cout << endl;
+    postorder(root_); cout << endl;
 
-    //inGenList(root_);
+    delSubTree(root_->pright->pright);
+    preorder(root_); cout << endl;
+    inorder(root_); cout << endl;
+    postorder(root_); cout << endl;
+#if 1
+    inGenList(root_);
 
-    //string gen = "23(46(36(#,93),#),36(71,#))";
+    string gen = "23(46(36(#,93),#),36(71,#))";
 
-    //int kk = 0;
-    //node* aroot = create(gen, kk);
-    //preorder(aroot); cout << endl;
-    //inorder(aroot); cout << endl;
-    //postorder(aroot); cout << endl;
+    int kk = 0;
+    node* aroot = create(gen, kk);
+    preorder(aroot); cout << endl;
+    inorder(aroot); cout << endl;
+    postorder(aroot); cout << endl;
+
     preorderNoRe(root_);
 
     inorderNoRe(root_);
@@ -150,11 +151,6 @@ int main()
 
     levelorder(root_);
 
-
-
-    int target = 931;
-    h = firstsee(root_,target);
-    cout << target << " first appear in " << h << "TH layer" <<endl;
 #endif
     return 0;
 }
