@@ -21,7 +21,7 @@ int main()
     int ct = 0;
 
     //定义的树的数据存在txt中
-    string data = "C:\\Users\\Administrator\\Desktop\\datastruct\\project\\data1.txt";
+    const char* data = "../data/tree.txt";
     ifstream input(data);
 
     while (input >> num)

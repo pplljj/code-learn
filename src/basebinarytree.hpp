@@ -1,5 +1,5 @@
 #include<iostream>
-
+#include<stdlib.h>
 //using for general list
 #include<string>
 
@@ -298,7 +298,7 @@ namespace bbt{
     //在空指针域插入另一颗树
     void insertAnotherTree(node* parent, node* ano_root, bool left)
     {
-        if ( left&&(parent->pleft != NULL) || (!left)&&(parent->pright != NULL))
+        if ( (left&&(parent->pleft != NULL)) || ((!left)&&(parent->pright != NULL)))
         {
             cout << "no empty points in inserting area!" <<endl;
             return;
