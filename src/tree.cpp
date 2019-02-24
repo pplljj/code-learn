@@ -70,12 +70,11 @@ int main()
 
     cout << "\nhou xu" << endl;
     postorder(root_);
-#if 0
+
     int leaf = 0;
     numofleaf(root_, leaf);
 
     cout << "\nleaf: " << leaf << endl;
-
 
     int lf = numofleaf(root_);
     cout << lf << endl;
@@ -100,30 +99,30 @@ int main()
 
     cout << "there are 23 of " << num_ << endl;
 
-    int ao = numOfContain(root_, 23);
-    cout << "OOOOOO 23 of " << ao << endl;
+    int ao = numOfContain(root_, 7);
+    cout << "there are " << ao  << "ge 7" << endl;
 
     int yu = nodecount(root_);
-    cout << yu << endl;
+    cout << "node num: "<<yu << endl;
 
     int nodenum = 0;
     numofnode(root_, nodenum);
     cout << "nodes number: " << nodenum<<endl;
 
-    //node* _root = insertNewRoot(root_, 657, false);
-    //preorder(_root); cout << endl;
-    //inorder(_root); cout << endl;
-    //postorder(_root); cout << endl;
+    node* _root = insertNewRoot(root_, 657, false);
+    preorder(_root); cout << endl;
+    inorder(_root); cout << endl;
+    postorder(_root); cout << endl;
 
-    //int yhn = layerofval(root_, 93);
-    //cout << "93 is at " << yhn << endl;
+    int yhn = firstsee(root_, 4);
+    cout << "4 is first saw at " << yhn << " th layer"<< endl;
 
 
-    //insertNode(_root->pright, 1024, true);
-    //preorder(_root); cout << endl;
-    //inorder(_root); cout << endl;
-    //postorder(_root); cout << endl;
-
+    insertNode(_root->pright, 1024, true);
+    preorder(_root); cout << endl;
+    inorder(_root); cout << endl;
+    postorder(_root); cout << endl;
+#if 0
     //insertByVal(root_, 36, 1024, true);
     //preorder(root_); cout << endl;
     //inorder(root_); cout << endl;

@@ -15,7 +15,7 @@ using namespace std;
 
 namespace bbt{
 
-    const int max_size = 10000;
+    const int max_size = 100;
 
     node* create(int nums[], int n, int& i)
     {
